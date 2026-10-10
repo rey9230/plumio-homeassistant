@@ -1,0 +1,412 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Serveur Plumio",
+        "data": {
+          "api_url": "Adresse de l'API"
+        }
+      },
+      "link": {
+        "title": "Associer votre Nid",
+        "description": "Sur le téléphone de l'administrateur du Nid, scannez ce code avec l'appareil photo, ou ouvrez Plumio → Nid → Intégrations et saisissez :\n\n## {code}\n\nApprouvez-le là-bas, puis appuyez sur **Envoyer** ici. Le code est valable 10 minutes.",
+        "data": {
+          "qr": "À scanner avec le téléphone de l'admin"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de joindre Plumio. Vérifiez votre connexion et réessayez.",
+      "not_approved_yet": "Pas encore approuvé. Approuvez-le dans l'app Plumio, puis appuyez de nouveau sur Envoyer.",
+      "denied": "La demande a été refusée dans l'app. Voici un nouveau code.",
+      "expired": "Ce code a expiré. En voici un nouveau."
+    },
+    "abort": {
+      "cannot_connect": "Impossible de joindre Plumio. Réessayez dans un instant.",
+      "already_configured": "Ce Nid est déjà associé.",
+      "reauth_successful": "Associé de nouveau.",
+      "wrong_nest": "Un autre Nid a été approuvé. Approuvez le même Nid qu'auparavant."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options Plumio",
+        "data": {
+          "home_from_places": "Considérer les lieux Plumio de type Maison comme domicile",
+          "max_gps_accuracy": "Ignorer les positions moins précises que"
+        },
+        "data_description": {
+          "max_gps_accuracy": "0 accepte tout."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Batterie"
+      },
+      "speed": {
+        "name": "Vitesse"
+      },
+      "activity": {
+        "name": "Activité",
+        "state": {
+          "still": "Immobile",
+          "walking": "À pied",
+          "running": "En course",
+          "on_bicycle": "À vélo",
+          "in_vehicle": "En véhicule",
+          "unknown": "Inconnue"
+        }
+      },
+      "place": {
+        "name": "Lieu"
+      },
+      "place_since": {
+        "name": "Sur place depuis"
+      },
+      "last_seen": {
+        "name": "Vu pour la dernière fois"
+      },
+      "location_updated": {
+        "name": "Position mise à jour"
+      },
+      "heading": {
+        "name": "Cap"
+      },
+      "gps_accuracy": {
+        "name": "Précision GPS"
+      },
+      "distance_from_home": {
+        "name": "Distance du domicile"
+      },
+      "last_trip_distance": {
+        "name": "Distance du dernier trajet"
+      },
+      "last_trip_max_speed": {
+        "name": "Vitesse max du dernier trajet"
+      },
+      "last_trip_ended": {
+        "name": "Fin du dernier trajet"
+      },
+      "last_trip_events": {
+        "name": "Événements du dernier trajet"
+      },
+      "members_home": {
+        "name": "Membres à la maison"
+      },
+      "plan": {
+        "name": "Forfait",
+        "state": {
+          "free": "Gratuit",
+          "premium": "Premium",
+          "paused": "En pause"
+        }
+      },
+      "occupancy": {
+        "name": "Membres présents"
+      },
+      "tag_battery": {
+        "name": "Tension de la pile"
+      },
+      "tag_last_seen": {
+        "name": "Vu pour la dernière fois"
+      }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "En charge"
+      },
+      "online": {
+        "name": "En ligne"
+      },
+      "driving": {
+        "name": "En route"
+      },
+      "sharing": {
+        "name": "Partage sa position"
+      },
+      "approximate": {
+        "name": "Zone approximative seulement"
+      },
+      "sos": {
+        "name": "SOS"
+      },
+      "security_alert": {
+        "name": "Alerte de sécurité"
+      },
+      "not_reporting": {
+        "name": "Ne signale plus"
+      },
+      "live_connection": {
+        "name": "Connexion en direct"
+      },
+      "anyone_home": {
+        "name": "Quelqu'un à la maison"
+      },
+      "everyone_home": {
+        "name": "Tout le monde à la maison"
+      },
+      "occupied": {
+        "name": "Occupé"
+      }
+    },
+    "button": {
+      "request_location": {
+        "name": "Demander la position"
+      },
+      "ring": {
+        "name": "Faire sonner le téléphone"
+      },
+      "refresh_all": {
+        "name": "Actualiser tout le monde"
+      }
+    },
+    "event": {
+      "activity_events": {
+        "name": "Événements",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "arrival": "Arrivée",
+              "departure": "Départ",
+              "checkin": "Check-in",
+              "sos": "SOS",
+              "sos_resolved": "SOS résolu",
+              "crash": "Accident détecté",
+              "speed_alert": "Excès de vitesse",
+              "low_battery": "Batterie faible",
+              "trip_started": "Trajet commencé",
+              "trip_ended": "Trajet terminé",
+              "trip_completed": "Résumé du trajet",
+              "security": "Alerte de sécurité",
+              "member_stale": "Ne signale plus",
+              "member_back": "Signale de nouveau"
+            }
+          }
+        }
+      },
+      "nest_events": {
+        "name": "Événements des tags",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "tag_seen": "Tag détecté"
+            }
+          }
+        }
+      }
+    }
+  },
+  "selector": {
+    "place_type": {
+      "options": {
+        "home": "Maison",
+        "work": "Travail",
+        "school": "École",
+        "custom": "Autre"
+      }
+    }
+  },
+  "exceptions": {
+    "premium_required": {
+      "message": "Cela nécessite Plumio Premium sur le compte du propriétaire du Nid."
+    },
+    "actions_disabled": {
+      "message": "L'administrateur du Nid a désactivé les actions pour cette intégration dans l'app Plumio."
+    },
+    "rate_limited": {
+      "message": "Trop tôt. Patientez un instant et réessayez."
+    },
+    "not_found": {
+      "message": "Plumio ne connaît plus ce membre ou ce lieu."
+    },
+    "zone_limit": {
+      "message": "Le Nid a atteint sa limite de lieux : {detail}"
+    },
+    "validation_error": {
+      "message": "Plumio a refusé les données : {detail}"
+    },
+    "request_failed": {
+      "message": "Plumio a refusé la demande : {detail}"
+    },
+    "link_revoked": {
+      "message": "Ce Nid n'est plus associé. Associez-le de nouveau depuis la page de l'intégration."
+    },
+    "cannot_connect": {
+      "message": "Impossible de joindre Plumio."
+    },
+    "location_not_requested": {
+      "message": "Rien n'a été envoyé : ce membre a mis le partage en pause, vient d'être sollicité ou n'a pas de téléphone joignable."
+    },
+    "nest_not_found": {
+      "message": "Ce Nid n'est pas associé ou pas chargé."
+    },
+    "nest_ambiguous": {
+      "message": "Plusieurs Nids sont associés : précisez lequel."
+    },
+    "member_not_found": {
+      "message": "Cet appareil n'est pas un membre Plumio."
+    }
+  },
+  "services": {
+    "request_location": {
+      "name": "Demander la position",
+      "description": "Réveille le téléphone d'un membre pour qu'il envoie une position récente.",
+      "fields": {
+        "device_id": {
+          "name": "Membre",
+          "description": "L'appareil du membre."
+        }
+      }
+    },
+    "ring_phone": {
+      "name": "Faire sonner le téléphone",
+      "description": "Fait sonner le téléphone d'un membre pour le retrouver.",
+      "fields": {
+        "device_id": {
+          "name": "Membre",
+          "description": "L'appareil du membre."
+        }
+      }
+    },
+    "stop_ring": {
+      "name": "Arrêter la sonnerie",
+      "description": "Arrête un téléphone qui sonne.",
+      "fields": {
+        "device_id": {
+          "name": "Membre",
+          "description": "L'appareil du membre."
+        }
+      }
+    },
+    "create_place": {
+      "name": "Créer un lieu",
+      "description": "Ajoute un lieu au Nid.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nid",
+          "description": "Nécessaire seulement avec plusieurs Nids associés."
+        },
+        "name": {
+          "name": "Nom",
+          "description": "Le nom du lieu."
+        },
+        "latitude": {
+          "name": "Latitude",
+          "description": "Latitude du centre."
+        },
+        "longitude": {
+          "name": "Longitude",
+          "description": "Longitude du centre."
+        },
+        "radius": {
+          "name": "Rayon",
+          "description": "Rayon en mètres."
+        },
+        "place_type": {
+          "name": "Type",
+          "description": "Le genre de lieu."
+        }
+      }
+    },
+    "update_place": {
+      "name": "Modifier un lieu",
+      "description": "Modifie un lieu du Nid.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nid",
+          "description": "Nécessaire seulement avec plusieurs Nids associés."
+        },
+        "place_id": {
+          "name": "ID du lieu",
+          "description": "L'ID Plumio du lieu (la dernière partie de l'identifiant de son appareil)."
+        },
+        "name": {
+          "name": "Nom",
+          "description": "Le nom du lieu."
+        },
+        "latitude": {
+          "name": "Latitude",
+          "description": "Latitude du centre."
+        },
+        "longitude": {
+          "name": "Longitude",
+          "description": "Longitude du centre."
+        },
+        "radius": {
+          "name": "Rayon",
+          "description": "Rayon en mètres."
+        },
+        "place_type": {
+          "name": "Type",
+          "description": "Le genre de lieu."
+        }
+      }
+    },
+    "delete_place": {
+      "name": "Supprimer un lieu",
+      "description": "Retire un lieu du Nid.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nid",
+          "description": "Nécessaire seulement avec plusieurs Nids associés."
+        },
+        "place_id": {
+          "name": "ID du lieu",
+          "description": "L'ID Plumio du lieu (la dernière partie de l'identifiant de son appareil)."
+        }
+      }
+    },
+    "import_zones": {
+      "name": "Importer les zones",
+      "description": "Copie vos zones Home Assistant dans le Nid comme lieux, en ignorant les noms déjà présents.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nid",
+          "description": "Nécessaire seulement avec plusieurs Nids associés."
+        }
+      }
+    },
+    "get_trips": {
+      "name": "Obtenir les trajets",
+      "description": "Renvoie les trajets récents d'un membre.",
+      "fields": {
+        "device_id": {
+          "name": "Membre",
+          "description": "L'appareil du membre."
+        },
+        "limit": {
+          "name": "Limite",
+          "description": "Combien de trajets renvoyer."
+        }
+      }
+    },
+    "get_driving_summary": {
+      "name": "Obtenir le résumé de conduite",
+      "description": "Renvoie le résumé de conduite d'un membre par période.",
+      "fields": {
+        "device_id": {
+          "name": "Membre",
+          "description": "L'appareil du membre."
+        }
+      }
+    },
+    "get_day_timeline": {
+      "name": "Obtenir la chronologie du jour",
+      "description": "Renvoie l'itinéraire, les étapes et les séjours d'un membre pour une journée.",
+      "fields": {
+        "device_id": {
+          "name": "Membre",
+          "description": "L'appareil du membre."
+        },
+        "date": {
+          "name": "Date",
+          "description": "Le jour à renvoyer. Aujourd'hui par défaut."
+        }
+      }
+    }
+  }
+}

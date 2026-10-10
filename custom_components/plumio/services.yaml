@@ -1,0 +1,147 @@
+request_location:
+  fields:
+    device_id: &member_device
+      required: true
+      selector:
+        device:
+          filter:
+            - integration: plumio
+              model: Member
+
+ring_phone:
+  fields:
+    device_id: *member_device
+
+stop_ring:
+  fields:
+    device_id: *member_device
+
+create_place:
+  fields:
+    config_entry_id: &nest_entry
+      required: false
+      selector:
+        config_entry:
+          integration: plumio
+    name:
+      required: true
+      selector:
+        text:
+    latitude:
+      required: true
+      selector:
+        number:
+          min: -90
+          max: 90
+          step: any
+          mode: box
+    longitude:
+      required: true
+      selector:
+        number:
+          min: -180
+          max: 180
+          step: any
+          mode: box
+    radius:
+      required: true
+      default: 100
+      selector:
+        number:
+          min: 1
+          max: 50000
+          unit_of_measurement: m
+          mode: box
+    place_type: &place_type
+      required: false
+      default: custom
+      selector:
+        select:
+          translation_key: place_type
+          options:
+            - home
+            - work
+            - school
+            - custom
+
+update_place:
+  fields:
+    config_entry_id: *nest_entry
+    place_id:
+      required: true
+      selector:
+        text:
+    name:
+      required: false
+      selector:
+        text:
+    latitude:
+      required: false
+      selector:
+        number:
+          min: -90
+          max: 90
+          step: any
+          mode: box
+    longitude:
+      required: false
+      selector:
+        number:
+          min: -180
+          max: 180
+          step: any
+          mode: box
+    radius:
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 50000
+          unit_of_measurement: m
+          mode: box
+    place_type:
+      required: false
+      selector:
+        select:
+          translation_key: place_type
+          options:
+            - home
+            - work
+            - school
+            - custom
+
+delete_place:
+  fields:
+    config_entry_id: *nest_entry
+    place_id:
+      required: true
+      selector:
+        text:
+
+import_zones:
+  fields:
+    config_entry_id: *nest_entry
+
+get_trips:
+  fields:
+    device_id: *member_device
+    limit:
+      required: false
+      default: 20
+      selector:
+        number:
+          min: 1
+          max: 200
+          mode: box
+
+get_driving_summary:
+  fields:
+    device_id: *member_device
+
+get_day_timeline:
+  fields:
+    device_id: *member_device
+    date:
+      required: false
+      selector:
+        date:
