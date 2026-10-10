@@ -46,6 +46,9 @@ _LOGGER = logging.getLogger(__name__)
 
 type PlumioConfigEntry = ConfigEntry[PlumioCoordinator]
 
+# What a location fix carries and a heartbeat does not.
+_LOCATION_KEYS = frozenset({"lat", "lng", "accuracy", "speed", "heading", "locationUpdatedAt", "userActivity"})
+
 # (event type, member id or None, payload)
 EventListener = Callable[[str, str | None, dict[str, Any]], None]
 
@@ -111,6 +114,11 @@ def apply_event(data: PlumioData, event: str, user_id: str | None, payload: dict
         current = data.members.get(user_id)
         if current is None:
             return False  # someone joined (or was un-excluded): only a snapshot knows the rest
+        if payload.get("sharing", True) and payload.get("lat") is None:
+            # A heartbeat: the phone says it is alive (battery, online) and nothing about
+            # where it is. Its empty location must not erase the one we have. Pausing is
+            # different — `sharing` is false there — and does erase it.
+            payload = {k: v for k, v in payload.items() if k not in _LOCATION_KEYS}
         current.update(payload)
         if not payload.get("sharing", True) or payload.get("approximate"):
             current.update(placeId=None, placeName=None, placeSince=None)
@@ -208,7 +216,7 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
         for device in dr.async_entries_for_config_entry(registry, self.config_entry.entry_id):
             ours = {ident for domain, ident in device.identifiers if domain == DOMAIN}
             if ours and not ours & keep:
-                registry.async_update_device(device.id, remove_config_entry_id=self.config_entry.entry_id)
+                registry.async_remove_device(device.id)
 
     # ---------- stream ----------
 

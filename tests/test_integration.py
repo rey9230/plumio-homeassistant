@@ -151,6 +151,30 @@ async def test_stream_events_update_state_and_fire_on_the_bus(
     assert len(fired) == 1
 
 
+async def test_heartbeat_without_location_keeps_the_last_fix(
+    hass: HomeAssistant, entry: MockConfigEntry, client: AsyncMock, stream: FakeStream
+) -> None:
+    """Seen against production: a heartbeat arrives with every location field null."""
+    await _setup(hass, entry)
+    heartbeat = {
+        "lat": None, "lng": None, "accuracy": None, "speed": None, "heading": None,
+        "locationUpdatedAt": None, "userActivity": None,
+        "sharing": True, "approximate": False, "batteryLevel": 41, "online": True,
+    }  # fmt: skip
+    stream.push("member", CAMILA, heartbeat)
+    await hass.async_block_till_done()
+
+    state = hass.states.get("device_tracker.camila")
+    assert state.attributes["latitude"] == 27.95
+    assert state.attributes["gps_accuracy"] == 12
+    assert hass.states.get("sensor.camila_battery").state == "41"
+
+    # Pausing is not a heartbeat: that one does take the location away.
+    stream.push("member", CAMILA, {**heartbeat, "sharing": False})
+    await hass.async_block_till_done()
+    assert "latitude" not in hass.states.get("device_tracker.camila").attributes
+
+
 async def test_resync_event_fetches_a_new_snapshot(
     hass: HomeAssistant, entry: MockConfigEntry, client: AsyncMock, stream: FakeStream
 ) -> None:
@@ -173,6 +197,24 @@ async def test_new_member_appears_without_reload(
     stream.push("member", "u-abuela", {"lat": 1.0, "lng": 1.0, "sharing": True})
     await hass.async_block_till_done()
     assert hass.states.get("device_tracker.abuela") is not None
+
+
+async def test_member_hidden_then_shown_again_comes_back(
+    hass: HomeAssistant, entry: MockConfigEntry, client: AsyncMock, stream: FakeStream
+) -> None:
+    """The admin hides someone in the app and later shows them again: no reload needed."""
+    await _setup(hass, entry)
+    assert hass.states.get("device_tracker.camila") is not None
+
+    client.snapshot.return_value = snapshot(members=[member(RENIEL, "Reniel")])
+    stream.push("resync")
+    await hass.async_block_till_done()
+    assert hass.states.get("device_tracker.camila") is None
+
+    client.snapshot.return_value = snapshot(members=[member(RENIEL, "Reniel"), member(CAMILA, "Camila")])
+    await entry.runtime_data.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get("device_tracker.camila") is not None
 
 
 # ---------- actions ----------

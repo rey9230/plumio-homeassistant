@@ -166,6 +166,11 @@ def async_add_as_they_appear(
         ):
             if factory is None:
                 continue
+            # Forget who left: their device is removed, and if they come back (the admin
+            # hides someone and shows them again) they need entities again. A paused Nest
+            # reports nobody without anybody leaving, and keeps its devices.
+            if not data.paused:
+                seen[kind] &= current.keys()
             for ident in current.keys() - seen[kind]:
                 seen[kind].add(ident)
                 new.extend(factory(ident))
