@@ -2,9 +2,15 @@
   "config": {
     "step": {
       "user": {
-        "title": "Servidor de Plumio",
-        "data": {
-          "api_url": "Dirección de la API"
+        "title": "Enlazar Plumio",
+        "description": "Pulsa Enviar para obtener un código. Quien administra tu Nido lo aprueba en la app de Plumio; Home Assistant nunca ve una contraseña.",
+        "sections": {
+          "advanced": {
+            "name": "Avanzado",
+            "data": {
+              "api_url": "Dirección de la API"
+            }
+          }
         }
       },
       "link": {

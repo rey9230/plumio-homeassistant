@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import config_validation as cv, device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import ConfigType
 
@@ -31,6 +31,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlumioConfigEntry) -> bo
     coordinator = PlumioCoordinator(hass, entry, client)
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
+
+    # The Nest's device first: everything else is registered "via" it.
+    nest_device = dr.async_get(hass).async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, coordinator.nest_id)},
+        name=coordinator.data.nest.get("name") or entry.title,
+        manufacturer="Plumio",
+        model="Nest",
+        entry_type=dr.DeviceEntryType.SERVICE,
+    )
+    coordinator.nest_device_id = nest_device.id
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     coordinator.start_stream()

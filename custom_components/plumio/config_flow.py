@@ -14,6 +14,7 @@ import voluptuous as vol
 
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, OptionsFlow
 from homeassistant.core import callback
+from homeassistant.data_entry_flow import section
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import (
     BooleanSelector,
@@ -40,6 +41,8 @@ from .const import (
 )
 from .coordinator import PlumioConfigEntry
 
+SECTION_ADVANCED = "advanced"
+
 
 class PlumioConfigFlow(ConfigFlow, domain=DOMAIN):
     """Link one Nest per config entry."""
@@ -60,14 +63,21 @@ class PlumioConfigFlow(ConfigFlow, domain=DOMAIN):
         return PlumioClient(async_get_clientsession(self.hass), self._api_url)
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        """Start. Only advanced mode asks anything (a different server, for testing)."""
-        if self.show_advanced_options and user_input is None:
+        """Start. Nothing to fill in; a collapsed section allows a different server (testing)."""
+        if user_input is None:
             return self.async_show_form(
                 step_id="user",
-                data_schema=vol.Schema({vol.Required(CONF_API_URL, default=DEFAULT_API_URL): str}),
+                data_schema=vol.Schema(
+                    {
+                        vol.Required(SECTION_ADVANCED): section(
+                            vol.Schema({vol.Optional(CONF_API_URL, default=DEFAULT_API_URL): str}),
+                            {"collapsed": True},
+                        )
+                    }
+                ),
             )
-        if user_input is not None:
-            self._api_url = user_input.get(CONF_API_URL, DEFAULT_API_URL).rstrip("/")
+        advanced = user_input.get(SECTION_ADVANCED) or {}
+        self._api_url = (advanced.get(CONF_API_URL) or DEFAULT_API_URL).rstrip("/")
         return await self.async_step_link()
 
     async def async_step_reauth(self, entry_data: Mapping[str, Any]) -> ConfigFlowResult:

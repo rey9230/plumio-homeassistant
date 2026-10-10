@@ -14,6 +14,9 @@ import aiohttp
 
 REQUEST_TIMEOUT = aiohttp.ClientTimeout(total=30)
 
+# Synthetic event emitted by `PlumioClient.events` once the stream is established.
+STREAM_OPEN = "_open"
+
 
 class PlumioError(Exception):
     """Base error: the request did not succeed."""
@@ -120,6 +123,9 @@ class PlumioClient:
                 f"{self._base}/integration/v1/events/stream", headers=headers, timeout=timeout
             ) as resp:
                 await self._raise_for_status(resp)
+                # A quiet Nest can go minutes without an event: say "connected" now,
+                # not when the first one happens to arrive.
+                yield SseEvent(event=STREAM_OPEN, data={}, id=None)
                 async for event in parse_sse(resp.content):
                     yield event
         except (aiohttp.ClientError, TimeoutError) as err:

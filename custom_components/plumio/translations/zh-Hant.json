@@ -2,9 +2,15 @@
   "config": {
     "step": {
       "user": {
-        "title": "Plumio 伺服器",
-        "data": {
-          "api_url": "API 位址"
+        "title": "連結 Plumio",
+        "description": "按下傳送以取得代碼。由巢的管理員在 Plumio App 中核准；Home Assistant 永遠看不到密碼。",
+        "sections": {
+          "advanced": {
+            "name": "進階",
+            "data": {
+              "api_url": "API 位址"
+            }
+          }
         }
       },
       "link": {

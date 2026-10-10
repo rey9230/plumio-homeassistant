@@ -2,9 +2,15 @@
   "config": {
     "step": {
       "user": {
-        "title": "Serveur Plumio",
-        "data": {
-          "api_url": "Adresse de l'API"
+        "title": "Associer Plumio",
+        "description": "Appuyez sur Envoyer pour obtenir un code. L'administrateur de votre Nid l'approuve dans l'app Plumio ; Home Assistant ne voit jamais de mot de passe.",
+        "sections": {
+          "advanced": {
+            "name": "Avancé",
+            "data": {
+              "api_url": "Adresse de l'API"
+            }
+          }
         }
       },
       "link": {

@@ -2,9 +2,15 @@
   "config": {
     "step": {
       "user": {
-        "title": "Server Plumio",
-        "data": {
-          "api_url": "Indirizzo API"
+        "title": "Collega Plumio",
+        "description": "Premi Invia per ottenere un codice. Chi amministra il tuo Nido lo approva nell'app Plumio; Home Assistant non vede mai una password.",
+        "sections": {
+          "advanced": {
+            "name": "Avanzate",
+            "data": {
+              "api_url": "Indirizzo API"
+            }
+          }
         }
       },
       "link": {

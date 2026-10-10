@@ -2,9 +2,15 @@
   "config": {
     "step": {
       "user": {
-        "title": "Plumio-Server",
-        "data": {
-          "api_url": "API-Adresse"
+        "title": "Plumio verknüpfen",
+        "description": "Drücke Absenden, um einen Code zu erhalten. Wer dein Nest verwaltet, bestätigt ihn in der Plumio-App; Home Assistant sieht nie ein Passwort.",
+        "sections": {
+          "advanced": {
+            "name": "Erweitert",
+            "data": {
+              "api_url": "API-Adresse"
+            }
+          }
         }
       },
       "link": {

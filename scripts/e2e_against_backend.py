@@ -152,8 +152,8 @@ async def main(base: str) -> None:
         await resumed.aclose()
 
         stale = client.events("1-1", read_timeout=90).__aiter__()
-        event = await asyncio.wait_for(stale.__anext__(), 20)
-        check(event.event == "resync", "an id the server no longer has yields `resync`")
+        event = await next_event(stale, "resync", 20)
+        check(event is not None, "an id the server no longer has yields `resync`")
         await stale.aclose()
 
         # ---- the admin's controls take effect at once ----

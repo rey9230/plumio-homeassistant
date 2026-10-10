@@ -17,7 +17,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
-from .api import PlumioAuthError, PlumioClient, PlumioConnectionError, PlumioError, SseEvent
+from .api import STREAM_OPEN, PlumioAuthError, PlumioClient, PlumioConnectionError, PlumioError, SseEvent
 from .const import (
     ATTR_MEMBER_ID,
     ATTR_NEST_ID,
@@ -160,7 +160,10 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
         )
         self.client = client
         self.nest_id: str = entry.data[CONF_NEST_ID]
+        # Registry id of the Nest's device; members, places and tags hang from it.
+        self.nest_device_id: str | None = None
         self.stream_connected = False
+        self._ever_connected = False
         self._last_event_id: str | None = None
         self._stream_task: asyncio.Task[None] | None = None
         self._event_listeners: list[EventListener] = []
@@ -228,7 +231,8 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
                     if not self.stream_connected:
                         self._set_stream_connected(True)
                     backoff = STREAM_BACKOFF_MIN
-                    await self._handle_stream_event(event)
+                    if event.event != STREAM_OPEN:
+                        await self._handle_stream_event(event)
                 # The server closed the stream cleanly (link revoked, deploy…): reconnect.
             except PlumioAuthError:
                 self._set_stream_connected(False)
@@ -248,10 +252,13 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
         self.stream_connected = connected
         self.update_interval = POLL_INTERVAL_STREAM_UP if connected else POLL_INTERVAL_STREAM_DOWN
         if connected:
-            # Whatever happened while we were away is either replayed or flagged as a
-            # resync by the server; one snapshot on first connect closes the gap for good.
-            if self._last_event_id is None:
+            # With an event id, the server replays what we missed (or says `resync`).
+            # Reconnecting without one — the Nest was quiet before the drop — there is
+            # nothing to resume from, so one snapshot closes the gap. Not on the very
+            # first connect: setup took a snapshot a moment ago.
+            if self._ever_connected and self._last_event_id is None:
                 self.hass.async_create_task(self.async_request_refresh())
+            self._ever_connected = True
         self.async_update_listeners()
 
     async def _handle_stream_event(self, sse: SseEvent) -> None:
