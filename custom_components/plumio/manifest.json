@@ -1,0 +1,13 @@
+{
+  "domain": "plumio",
+  "name": "Plumio",
+  "codeowners": ["@rey9230"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://www.useplumio.com/home-assistant",
+  "integration_type": "hub",
+  "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/rey9230/plumio-homeassistant/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

@@ -1,0 +1,412 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Servidor de Plumio",
+        "data": {
+          "api_url": "Dirección de la API"
+        }
+      },
+      "link": {
+        "title": "Enlaza tu Nido",
+        "description": "En el teléfono de quien administra el Nido, escanea este código con la cámara, o abre Plumio → Nido → Integraciones y escribe:\n\n## {code}\n\nApruébalo allí y luego pulsa **Enviar** aquí. El código vale 10 minutos.",
+        "data": {
+          "qr": "Escanéalo con el teléfono del admin"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No se pudo conectar con Plumio. Revisa tu conexión e inténtalo de nuevo.",
+      "not_approved_yet": "Todavía no está aprobado. Apruébalo en la app de Plumio y pulsa Enviar otra vez.",
+      "denied": "La solicitud se rechazó en la app. Aquí tienes un código nuevo.",
+      "expired": "Ese código caducó. Aquí tienes uno nuevo."
+    },
+    "abort": {
+      "cannot_connect": "No se pudo conectar con Plumio. Inténtalo de nuevo en un momento.",
+      "already_configured": "Este Nido ya está enlazado.",
+      "reauth_successful": "Enlazado de nuevo.",
+      "wrong_nest": "Se aprobó un Nido distinto. Aprueba el mismo Nido que estaba enlazado."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opciones de Plumio",
+        "data": {
+          "home_from_places": "Tratar los lugares de tipo Casa de Plumio como casa",
+          "max_gps_accuracy": "Ignorar ubicaciones menos precisas que"
+        },
+        "data_description": {
+          "max_gps_accuracy": "0 lo acepta todo."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Batería"
+      },
+      "speed": {
+        "name": "Velocidad"
+      },
+      "activity": {
+        "name": "Actividad",
+        "state": {
+          "still": "Quieto",
+          "walking": "Andando",
+          "running": "Corriendo",
+          "on_bicycle": "En bici",
+          "in_vehicle": "En vehículo",
+          "unknown": "Desconocida"
+        }
+      },
+      "place": {
+        "name": "Lugar"
+      },
+      "place_since": {
+        "name": "En el lugar desde"
+      },
+      "last_seen": {
+        "name": "Última vez visto"
+      },
+      "location_updated": {
+        "name": "Ubicación actualizada"
+      },
+      "heading": {
+        "name": "Rumbo"
+      },
+      "gps_accuracy": {
+        "name": "Precisión GPS"
+      },
+      "distance_from_home": {
+        "name": "Distancia a casa"
+      },
+      "last_trip_distance": {
+        "name": "Distancia del último viaje"
+      },
+      "last_trip_max_speed": {
+        "name": "Velocidad máxima del último viaje"
+      },
+      "last_trip_ended": {
+        "name": "Fin del último viaje"
+      },
+      "last_trip_events": {
+        "name": "Incidencias del último viaje"
+      },
+      "members_home": {
+        "name": "Miembros en casa"
+      },
+      "plan": {
+        "name": "Plan",
+        "state": {
+          "free": "Gratis",
+          "premium": "Premium",
+          "paused": "En pausa"
+        }
+      },
+      "occupancy": {
+        "name": "Miembros aquí"
+      },
+      "tag_battery": {
+        "name": "Voltaje de la pila"
+      },
+      "tag_last_seen": {
+        "name": "Última vez visto"
+      }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Cargando"
+      },
+      "online": {
+        "name": "En línea"
+      },
+      "driving": {
+        "name": "Conduciendo"
+      },
+      "sharing": {
+        "name": "Compartiendo ubicación"
+      },
+      "approximate": {
+        "name": "Solo zona aproximada"
+      },
+      "sos": {
+        "name": "SOS"
+      },
+      "security_alert": {
+        "name": "Alerta de seguridad"
+      },
+      "not_reporting": {
+        "name": "Sin reportar"
+      },
+      "live_connection": {
+        "name": "Conexión en vivo"
+      },
+      "anyone_home": {
+        "name": "Alguien en casa"
+      },
+      "everyone_home": {
+        "name": "Todos en casa"
+      },
+      "occupied": {
+        "name": "Ocupado"
+      }
+    },
+    "button": {
+      "request_location": {
+        "name": "Pedir ubicación"
+      },
+      "ring": {
+        "name": "Hacer sonar el teléfono"
+      },
+      "refresh_all": {
+        "name": "Actualizar a todos"
+      }
+    },
+    "event": {
+      "activity_events": {
+        "name": "Eventos",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "arrival": "Llegó",
+              "departure": "Salió",
+              "checkin": "Check-in",
+              "sos": "SOS",
+              "sos_resolved": "SOS resuelto",
+              "crash": "Choque detectado",
+              "speed_alert": "Exceso de velocidad",
+              "low_battery": "Batería baja",
+              "trip_started": "Viaje iniciado",
+              "trip_ended": "Viaje terminado",
+              "trip_completed": "Resumen del viaje",
+              "security": "Alerta de seguridad",
+              "member_stale": "Dejó de reportar",
+              "member_back": "Volvió a reportar"
+            }
+          }
+        }
+      },
+      "nest_events": {
+        "name": "Eventos de tags",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "tag_seen": "Tag visto"
+            }
+          }
+        }
+      }
+    }
+  },
+  "selector": {
+    "place_type": {
+      "options": {
+        "home": "Casa",
+        "work": "Trabajo",
+        "school": "Colegio",
+        "custom": "Otro"
+      }
+    }
+  },
+  "exceptions": {
+    "premium_required": {
+      "message": "Esto necesita Plumio Premium en la cuenta del dueño del Nido."
+    },
+    "actions_disabled": {
+      "message": "Quien administra el Nido desactivó las acciones para esta integración en la app de Plumio."
+    },
+    "rate_limited": {
+      "message": "Demasiado pronto. Espera un momento e inténtalo de nuevo."
+    },
+    "not_found": {
+      "message": "Plumio ya no conoce a ese miembro o lugar."
+    },
+    "zone_limit": {
+      "message": "El Nido llegó a su límite de lugares: {detail}"
+    },
+    "validation_error": {
+      "message": "Plumio rechazó los datos: {detail}"
+    },
+    "request_failed": {
+      "message": "Plumio rechazó la petición: {detail}"
+    },
+    "link_revoked": {
+      "message": "Este Nido ya no está enlazado. Enlázalo de nuevo desde la página de la integración."
+    },
+    "cannot_connect": {
+      "message": "No se pudo conectar con Plumio."
+    },
+    "location_not_requested": {
+      "message": "No se envió nada: este miembro pausó el compartir, se le pidió hace segundos o no tiene teléfono al que llegar."
+    },
+    "nest_not_found": {
+      "message": "Ese Nido no está enlazado o no está cargado."
+    },
+    "nest_ambiguous": {
+      "message": "Hay más de un Nido enlazado: indica cuál."
+    },
+    "member_not_found": {
+      "message": "Ese dispositivo no es un miembro de Plumio."
+    }
+  },
+  "services": {
+    "request_location": {
+      "name": "Pedir ubicación",
+      "description": "Despierta el teléfono de un miembro para que reporte una ubicación reciente.",
+      "fields": {
+        "device_id": {
+          "name": "Miembro",
+          "description": "El dispositivo del miembro."
+        }
+      }
+    },
+    "ring_phone": {
+      "name": "Hacer sonar el teléfono",
+      "description": "Hace sonar el teléfono de un miembro para encontrarlo.",
+      "fields": {
+        "device_id": {
+          "name": "Miembro",
+          "description": "El dispositivo del miembro."
+        }
+      }
+    },
+    "stop_ring": {
+      "name": "Dejar de sonar",
+      "description": "Detiene un teléfono que está sonando.",
+      "fields": {
+        "device_id": {
+          "name": "Miembro",
+          "description": "El dispositivo del miembro."
+        }
+      }
+    },
+    "create_place": {
+      "name": "Crear lugar",
+      "description": "Añade un lugar al Nido.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nido",
+          "description": "Solo hace falta con más de un Nido enlazado."
+        },
+        "name": {
+          "name": "Nombre",
+          "description": "Cómo se llama el lugar."
+        },
+        "latitude": {
+          "name": "Latitud",
+          "description": "Latitud del centro."
+        },
+        "longitude": {
+          "name": "Longitud",
+          "description": "Longitud del centro."
+        },
+        "radius": {
+          "name": "Radio",
+          "description": "Radio en metros."
+        },
+        "place_type": {
+          "name": "Tipo",
+          "description": "Qué clase de lugar es."
+        }
+      }
+    },
+    "update_place": {
+      "name": "Editar lugar",
+      "description": "Cambia un lugar del Nido.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nido",
+          "description": "Solo hace falta con más de un Nido enlazado."
+        },
+        "place_id": {
+          "name": "ID del lugar",
+          "description": "El ID del lugar en Plumio (la última parte del identificador de su dispositivo)."
+        },
+        "name": {
+          "name": "Nombre",
+          "description": "Cómo se llama el lugar."
+        },
+        "latitude": {
+          "name": "Latitud",
+          "description": "Latitud del centro."
+        },
+        "longitude": {
+          "name": "Longitud",
+          "description": "Longitud del centro."
+        },
+        "radius": {
+          "name": "Radio",
+          "description": "Radio en metros."
+        },
+        "place_type": {
+          "name": "Tipo",
+          "description": "Qué clase de lugar es."
+        }
+      }
+    },
+    "delete_place": {
+      "name": "Borrar lugar",
+      "description": "Quita un lugar del Nido.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nido",
+          "description": "Solo hace falta con más de un Nido enlazado."
+        },
+        "place_id": {
+          "name": "ID del lugar",
+          "description": "El ID del lugar en Plumio (la última parte del identificador de su dispositivo)."
+        }
+      }
+    },
+    "import_zones": {
+      "name": "Importar zonas",
+      "description": "Copia tus zonas de Home Assistant al Nido como lugares, saltando los nombres que ya tiene.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nido",
+          "description": "Solo hace falta con más de un Nido enlazado."
+        }
+      }
+    },
+    "get_trips": {
+      "name": "Obtener viajes",
+      "description": "Devuelve los viajes recientes de un miembro.",
+      "fields": {
+        "device_id": {
+          "name": "Miembro",
+          "description": "El dispositivo del miembro."
+        },
+        "limit": {
+          "name": "Límite",
+          "description": "Cuántos viajes devolver."
+        }
+      }
+    },
+    "get_driving_summary": {
+      "name": "Obtener resumen de conducción",
+      "description": "Devuelve el resumen de conducción de un miembro por periodos.",
+      "fields": {
+        "device_id": {
+          "name": "Miembro",
+          "description": "El dispositivo del miembro."
+        }
+      }
+    },
+    "get_day_timeline": {
+      "name": "Obtener línea del día",
+      "description": "Devuelve la ruta, los tramos y las estancias de un miembro en un día.",
+      "fields": {
+        "device_id": {
+          "name": "Miembro",
+          "description": "El dispositivo del miembro."
+        },
+        "date": {
+          "name": "Fecha",
+          "description": "El día a devolver. Hoy si se omite."
+        }
+      }
+    }
+  }
+}

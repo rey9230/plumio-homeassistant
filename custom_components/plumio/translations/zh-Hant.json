@@ -1,0 +1,412 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Plumio 伺服器",
+        "data": {
+          "api_url": "API 位址"
+        }
+      },
+      "link": {
+        "title": "連結你的巢",
+        "description": "用巢管理員的手機相機掃描這個條碼，或開啟 Plumio → 巢 → 整合並輸入：\n\n## {code}\n\n在手機上核准後，再按這裡的**傳送**。代碼有效時間為 10 分鐘。",
+        "data": {
+          "qr": "用管理員的手機掃描"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "無法連線到 Plumio。請檢查網路後再試一次。",
+      "not_approved_yet": "尚未核准。請在 Plumio App 中核准，然後再按一次傳送。",
+      "denied": "請求已在 App 中被拒絕。這是新的代碼。",
+      "expired": "該代碼已過期。這是新的代碼。"
+    },
+    "abort": {
+      "cannot_connect": "無法連線到 Plumio。請稍後再試。",
+      "already_configured": "這個巢已經連結。",
+      "reauth_successful": "已重新連結。",
+      "wrong_nest": "核准的是另一個巢。請核准先前連結的同一個巢。"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Plumio 選項",
+        "data": {
+          "home_from_places": "將 Plumio 中類型為「家」的地點視為在家",
+          "max_gps_accuracy": "忽略精確度低於此值的定位"
+        },
+        "data_description": {
+          "max_gps_accuracy": "0 表示全部接受。"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "電量"
+      },
+      "speed": {
+        "name": "速度"
+      },
+      "activity": {
+        "name": "活動",
+        "state": {
+          "still": "靜止",
+          "walking": "步行",
+          "running": "跑步",
+          "on_bicycle": "騎單車",
+          "in_vehicle": "乘車",
+          "unknown": "未知"
+        }
+      },
+      "place": {
+        "name": "地點"
+      },
+      "place_since": {
+        "name": "抵達地點時間"
+      },
+      "last_seen": {
+        "name": "上次上線"
+      },
+      "location_updated": {
+        "name": "位置更新時間"
+      },
+      "heading": {
+        "name": "方向"
+      },
+      "gps_accuracy": {
+        "name": "GPS 精確度"
+      },
+      "distance_from_home": {
+        "name": "離家距離"
+      },
+      "last_trip_distance": {
+        "name": "上次行程距離"
+      },
+      "last_trip_max_speed": {
+        "name": "上次行程最高速度"
+      },
+      "last_trip_ended": {
+        "name": "上次行程結束時間"
+      },
+      "last_trip_events": {
+        "name": "上次行程駕駛事件"
+      },
+      "members_home": {
+        "name": "在家成員數"
+      },
+      "plan": {
+        "name": "方案",
+        "state": {
+          "free": "免費",
+          "premium": "Premium",
+          "paused": "已暫停"
+        }
+      },
+      "occupancy": {
+        "name": "此處成員數"
+      },
+      "tag_battery": {
+        "name": "電池電壓"
+      },
+      "tag_last_seen": {
+        "name": "上次偵測時間"
+      }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "充電中"
+      },
+      "online": {
+        "name": "上線"
+      },
+      "driving": {
+        "name": "駕駛中"
+      },
+      "sharing": {
+        "name": "正在分享位置"
+      },
+      "approximate": {
+        "name": "僅大約區域"
+      },
+      "sos": {
+        "name": "緊急求救"
+      },
+      "security_alert": {
+        "name": "安全警示"
+      },
+      "not_reporting": {
+        "name": "未回報"
+      },
+      "live_connection": {
+        "name": "即時連線"
+      },
+      "anyone_home": {
+        "name": "有人在家"
+      },
+      "everyone_home": {
+        "name": "全員在家"
+      },
+      "occupied": {
+        "name": "有人"
+      }
+    },
+    "button": {
+      "request_location": {
+        "name": "要求更新位置"
+      },
+      "ring": {
+        "name": "讓手機響鈴"
+      },
+      "refresh_all": {
+        "name": "更新所有人"
+      }
+    },
+    "event": {
+      "activity_events": {
+        "name": "事件",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "arrival": "抵達",
+              "departure": "離開",
+              "checkin": "報平安",
+              "sos": "緊急求救",
+              "sos_resolved": "求救已解除",
+              "crash": "偵測到碰撞",
+              "speed_alert": "超速",
+              "low_battery": "電量偏低",
+              "trip_started": "行程開始",
+              "trip_ended": "行程結束",
+              "trip_completed": "行程摘要",
+              "security": "安全警示",
+              "member_stale": "停止回報",
+              "member_back": "恢復回報"
+            }
+          }
+        }
+      },
+      "nest_events": {
+        "name": "標籤事件",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "tag_seen": "偵測到標籤"
+            }
+          }
+        }
+      }
+    }
+  },
+  "selector": {
+    "place_type": {
+      "options": {
+        "home": "家",
+        "work": "公司",
+        "school": "學校",
+        "custom": "其他"
+      }
+    }
+  },
+  "exceptions": {
+    "premium_required": {
+      "message": "此功能需要巢擁有者訂閱 Plumio Premium。"
+    },
+    "actions_disabled": {
+      "message": "巢管理員已在 Plumio App 中停用此整合的操作功能。"
+    },
+    "rate_limited": {
+      "message": "操作太頻繁。請稍候再試。"
+    },
+    "not_found": {
+      "message": "Plumio 中已找不到該成員或地點。"
+    },
+    "zone_limit": {
+      "message": "巢的地點數量已達上限：{detail}"
+    },
+    "validation_error": {
+      "message": "Plumio 拒絕了這些資料：{detail}"
+    },
+    "request_failed": {
+      "message": "Plumio 拒絕了請求：{detail}"
+    },
+    "link_revoked": {
+      "message": "這個巢已不再連結。請從整合頁面重新連結。"
+    },
+    "cannot_connect": {
+      "message": "無法連線到 Plumio。"
+    },
+    "location_not_requested": {
+      "message": "未送出任何請求：該成員已暫停分享、剛剛才被要求過，或沒有可聯絡的手機。"
+    },
+    "nest_not_found": {
+      "message": "該巢尚未連結或未載入。"
+    },
+    "nest_ambiguous": {
+      "message": "已連結多個巢：請指定其中一個。"
+    },
+    "member_not_found": {
+      "message": "該裝置不是 Plumio 成員。"
+    }
+  },
+  "services": {
+    "request_location": {
+      "name": "要求更新位置",
+      "description": "喚醒成員的手機以回報最新位置。",
+      "fields": {
+        "device_id": {
+          "name": "成員",
+          "description": "該成員的裝置。"
+        }
+      }
+    },
+    "ring_phone": {
+      "name": "讓手機響鈴",
+      "description": "讓成員的手機響鈴以便尋找。",
+      "fields": {
+        "device_id": {
+          "name": "成員",
+          "description": "該成員的裝置。"
+        }
+      }
+    },
+    "stop_ring": {
+      "name": "停止響鈴",
+      "description": "停止正在響鈴的手機。",
+      "fields": {
+        "device_id": {
+          "name": "成員",
+          "description": "該成員的裝置。"
+        }
+      }
+    },
+    "create_place": {
+      "name": "建立地點",
+      "description": "在巢中新增地點。",
+      "fields": {
+        "config_entry_id": {
+          "name": "巢",
+          "description": "只有連結多個巢時才需要。"
+        },
+        "name": {
+          "name": "名稱",
+          "description": "地點的名稱。"
+        },
+        "latitude": {
+          "name": "緯度",
+          "description": "中心點的緯度。"
+        },
+        "longitude": {
+          "name": "經度",
+          "description": "中心點的經度。"
+        },
+        "radius": {
+          "name": "半徑",
+          "description": "半徑（公尺）。"
+        },
+        "place_type": {
+          "name": "類型",
+          "description": "地點的種類。"
+        }
+      }
+    },
+    "update_place": {
+      "name": "編輯地點",
+      "description": "修改巢中的地點。",
+      "fields": {
+        "config_entry_id": {
+          "name": "巢",
+          "description": "只有連結多個巢時才需要。"
+        },
+        "place_id": {
+          "name": "地點 ID",
+          "description": "該地點的 Plumio ID（裝置識別碼的最後一段）。"
+        },
+        "name": {
+          "name": "名稱",
+          "description": "地點的名稱。"
+        },
+        "latitude": {
+          "name": "緯度",
+          "description": "中心點的緯度。"
+        },
+        "longitude": {
+          "name": "經度",
+          "description": "中心點的經度。"
+        },
+        "radius": {
+          "name": "半徑",
+          "description": "半徑（公尺）。"
+        },
+        "place_type": {
+          "name": "類型",
+          "description": "地點的種類。"
+        }
+      }
+    },
+    "delete_place": {
+      "name": "刪除地點",
+      "description": "從巢中移除地點。",
+      "fields": {
+        "config_entry_id": {
+          "name": "巢",
+          "description": "只有連結多個巢時才需要。"
+        },
+        "place_id": {
+          "name": "地點 ID",
+          "description": "該地點的 Plumio ID（裝置識別碼的最後一段）。"
+        }
+      }
+    },
+    "import_zones": {
+      "name": "匯入區域",
+      "description": "將 Home Assistant 的區域複製到巢中成為地點，並略過已有的名稱。",
+      "fields": {
+        "config_entry_id": {
+          "name": "巢",
+          "description": "只有連結多個巢時才需要。"
+        }
+      }
+    },
+    "get_trips": {
+      "name": "取得行程",
+      "description": "傳回成員最近的行程。",
+      "fields": {
+        "device_id": {
+          "name": "成員",
+          "description": "該成員的裝置。"
+        },
+        "limit": {
+          "name": "數量上限",
+          "description": "要傳回的行程數量。"
+        }
+      }
+    },
+    "get_driving_summary": {
+      "name": "取得駕駛摘要",
+      "description": "依期間傳回成員的駕駛摘要。",
+      "fields": {
+        "device_id": {
+          "name": "成員",
+          "description": "該成員的裝置。"
+        }
+      }
+    },
+    "get_day_timeline": {
+      "name": "取得當日時間軸",
+      "description": "傳回成員某一天的路線、路段與停留。",
+      "fields": {
+        "device_id": {
+          "name": "成員",
+          "description": "該成員的裝置。"
+        },
+        "date": {
+          "name": "日期",
+          "description": "要查詢的日期，未填則為今天。"
+        }
+      }
+    }
+  }
+}

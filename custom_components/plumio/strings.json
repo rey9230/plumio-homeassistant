@@ -1,0 +1,412 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Plumio server",
+        "data": {
+          "api_url": "API address"
+        }
+      },
+      "link": {
+        "title": "Link your Nest",
+        "description": "On the phone of the Nest's admin, scan this code with the camera, or open Plumio → Nest → Integrations and type:\n\n## {code}\n\nApprove it there, then press **Submit** here. The code is valid for 10 minutes.",
+        "data": {
+          "qr": "Scan with the admin's phone"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach Plumio. Check your connection and try again.",
+      "not_approved_yet": "Not approved yet. Approve it in the Plumio app, then press Submit again.",
+      "denied": "The request was rejected in the app. Here is a new code.",
+      "expired": "That code expired. Here is a new one."
+    },
+    "abort": {
+      "cannot_connect": "Could not reach Plumio. Try again in a moment.",
+      "already_configured": "This Nest is already linked.",
+      "reauth_successful": "Linked again.",
+      "wrong_nest": "A different Nest was approved. Approve the same Nest that was linked before."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Plumio options",
+        "data": {
+          "home_from_places": "Treat Plumio places of type Home as home",
+          "max_gps_accuracy": "Ignore fixes less precise than"
+        },
+        "data_description": {
+          "max_gps_accuracy": "0 accepts everything."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Battery"
+      },
+      "speed": {
+        "name": "Speed"
+      },
+      "activity": {
+        "name": "Activity",
+        "state": {
+          "still": "Still",
+          "walking": "Walking",
+          "running": "Running",
+          "on_bicycle": "Cycling",
+          "in_vehicle": "In a vehicle",
+          "unknown": "Unknown"
+        }
+      },
+      "place": {
+        "name": "Place"
+      },
+      "place_since": {
+        "name": "At place since"
+      },
+      "last_seen": {
+        "name": "Last seen"
+      },
+      "location_updated": {
+        "name": "Location updated"
+      },
+      "heading": {
+        "name": "Heading"
+      },
+      "gps_accuracy": {
+        "name": "GPS accuracy"
+      },
+      "distance_from_home": {
+        "name": "Distance from home"
+      },
+      "last_trip_distance": {
+        "name": "Last trip distance"
+      },
+      "last_trip_max_speed": {
+        "name": "Last trip top speed"
+      },
+      "last_trip_ended": {
+        "name": "Last trip ended"
+      },
+      "last_trip_events": {
+        "name": "Last trip driving events"
+      },
+      "members_home": {
+        "name": "Members home"
+      },
+      "plan": {
+        "name": "Plan",
+        "state": {
+          "free": "Free",
+          "premium": "Premium",
+          "paused": "Paused"
+        }
+      },
+      "occupancy": {
+        "name": "Members here"
+      },
+      "tag_battery": {
+        "name": "Battery voltage"
+      },
+      "tag_last_seen": {
+        "name": "Last seen"
+      }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Charging"
+      },
+      "online": {
+        "name": "Online"
+      },
+      "driving": {
+        "name": "Driving"
+      },
+      "sharing": {
+        "name": "Sharing location"
+      },
+      "approximate": {
+        "name": "Approximate area only"
+      },
+      "sos": {
+        "name": "SOS"
+      },
+      "security_alert": {
+        "name": "Security alert"
+      },
+      "not_reporting": {
+        "name": "Not reporting"
+      },
+      "live_connection": {
+        "name": "Live connection"
+      },
+      "anyone_home": {
+        "name": "Anyone home"
+      },
+      "everyone_home": {
+        "name": "Everyone home"
+      },
+      "occupied": {
+        "name": "Occupied"
+      }
+    },
+    "button": {
+      "request_location": {
+        "name": "Request location"
+      },
+      "ring": {
+        "name": "Ring phone"
+      },
+      "refresh_all": {
+        "name": "Refresh everyone"
+      }
+    },
+    "event": {
+      "activity_events": {
+        "name": "Events",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "arrival": "Arrived",
+              "departure": "Left",
+              "checkin": "Check-in",
+              "sos": "SOS",
+              "sos_resolved": "SOS resolved",
+              "crash": "Crash detected",
+              "speed_alert": "Speeding",
+              "low_battery": "Low battery",
+              "trip_started": "Trip started",
+              "trip_ended": "Trip ended",
+              "trip_completed": "Trip summary",
+              "security": "Security alert",
+              "member_stale": "Stopped reporting",
+              "member_back": "Reporting again"
+            }
+          }
+        }
+      },
+      "nest_events": {
+        "name": "Tag events",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "tag_seen": "Tag seen"
+            }
+          }
+        }
+      }
+    }
+  },
+  "selector": {
+    "place_type": {
+      "options": {
+        "home": "Home",
+        "work": "Work",
+        "school": "School",
+        "custom": "Other"
+      }
+    }
+  },
+  "exceptions": {
+    "premium_required": {
+      "message": "This needs Plumio Premium on the Nest owner's account."
+    },
+    "actions_disabled": {
+      "message": "The Nest's admin turned off actions for this integration in the Plumio app."
+    },
+    "rate_limited": {
+      "message": "Too soon. Wait a moment and try again."
+    },
+    "not_found": {
+      "message": "Plumio no longer knows that member or place."
+    },
+    "zone_limit": {
+      "message": "The Nest has reached its place limit: {detail}"
+    },
+    "validation_error": {
+      "message": "Plumio rejected the data: {detail}"
+    },
+    "request_failed": {
+      "message": "Plumio refused the request: {detail}"
+    },
+    "link_revoked": {
+      "message": "This Nest is no longer linked. Link it again from the integration page."
+    },
+    "cannot_connect": {
+      "message": "Could not reach Plumio."
+    },
+    "location_not_requested": {
+      "message": "Nothing was sent: this member paused sharing, was asked seconds ago, or has no phone to reach."
+    },
+    "nest_not_found": {
+      "message": "That Nest is not linked or not loaded."
+    },
+    "nest_ambiguous": {
+      "message": "More than one Nest is linked: say which one."
+    },
+    "member_not_found": {
+      "message": "That device is not a Plumio member."
+    }
+  },
+  "services": {
+    "request_location": {
+      "name": "Request location",
+      "description": "Wakes a member's phone to report a fresh location.",
+      "fields": {
+        "device_id": {
+          "name": "Member",
+          "description": "The member's device."
+        }
+      }
+    },
+    "ring_phone": {
+      "name": "Ring phone",
+      "description": "Makes a member's phone ring so it can be found.",
+      "fields": {
+        "device_id": {
+          "name": "Member",
+          "description": "The member's device."
+        }
+      }
+    },
+    "stop_ring": {
+      "name": "Stop ringing",
+      "description": "Stops a phone that is ringing.",
+      "fields": {
+        "device_id": {
+          "name": "Member",
+          "description": "The member's device."
+        }
+      }
+    },
+    "create_place": {
+      "name": "Create place",
+      "description": "Adds a place to the Nest.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nest",
+          "description": "Only needed with more than one linked Nest."
+        },
+        "name": {
+          "name": "Name",
+          "description": "How the place is called."
+        },
+        "latitude": {
+          "name": "Latitude",
+          "description": "Latitude of the centre."
+        },
+        "longitude": {
+          "name": "Longitude",
+          "description": "Longitude of the centre."
+        },
+        "radius": {
+          "name": "Radius",
+          "description": "Radius in metres."
+        },
+        "place_type": {
+          "name": "Type",
+          "description": "What kind of place it is."
+        }
+      }
+    },
+    "update_place": {
+      "name": "Update place",
+      "description": "Changes a place of the Nest.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nest",
+          "description": "Only needed with more than one linked Nest."
+        },
+        "place_id": {
+          "name": "Place ID",
+          "description": "The place's Plumio ID (the last part of its device identifier)."
+        },
+        "name": {
+          "name": "Name",
+          "description": "How the place is called."
+        },
+        "latitude": {
+          "name": "Latitude",
+          "description": "Latitude of the centre."
+        },
+        "longitude": {
+          "name": "Longitude",
+          "description": "Longitude of the centre."
+        },
+        "radius": {
+          "name": "Radius",
+          "description": "Radius in metres."
+        },
+        "place_type": {
+          "name": "Type",
+          "description": "What kind of place it is."
+        }
+      }
+    },
+    "delete_place": {
+      "name": "Delete place",
+      "description": "Removes a place from the Nest.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nest",
+          "description": "Only needed with more than one linked Nest."
+        },
+        "place_id": {
+          "name": "Place ID",
+          "description": "The place's Plumio ID (the last part of its device identifier)."
+        }
+      }
+    },
+    "import_zones": {
+      "name": "Import zones",
+      "description": "Copies your Home Assistant zones into the Nest as places, skipping names it already has.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nest",
+          "description": "Only needed with more than one linked Nest."
+        }
+      }
+    },
+    "get_trips": {
+      "name": "Get trips",
+      "description": "Returns a member's recent trips.",
+      "fields": {
+        "device_id": {
+          "name": "Member",
+          "description": "The member's device."
+        },
+        "limit": {
+          "name": "Limit",
+          "description": "How many trips to return."
+        }
+      }
+    },
+    "get_driving_summary": {
+      "name": "Get driving summary",
+      "description": "Returns a member's driving summary by period.",
+      "fields": {
+        "device_id": {
+          "name": "Member",
+          "description": "The member's device."
+        }
+      }
+    },
+    "get_day_timeline": {
+      "name": "Get day timeline",
+      "description": "Returns a member's route, legs and stays for one day.",
+      "fields": {
+        "device_id": {
+          "name": "Member",
+          "description": "The member's device."
+        },
+        "date": {
+          "name": "Date",
+          "description": "The day to return. Today if omitted."
+        }
+      }
+    }
+  }
+}

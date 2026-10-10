@@ -1,0 +1,412 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Plumio-Server",
+        "data": {
+          "api_url": "API-Adresse"
+        }
+      },
+      "link": {
+        "title": "Nest verknüpfen",
+        "description": "Scanne diesen Code mit der Kamera des Handys der Person, die das Nest verwaltet, oder öffne Plumio → Nest → Integrationen und gib ein:\n\n## {code}\n\nBestätige dort und drücke dann hier auf **Absenden**. Der Code gilt 10 Minuten.",
+        "data": {
+          "qr": "Mit dem Handy des Admins scannen"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Plumio ist nicht erreichbar. Prüfe die Verbindung und versuche es erneut.",
+      "not_approved_yet": "Noch nicht bestätigt. Bestätige in der Plumio-App und drücke erneut auf Absenden.",
+      "denied": "Die Anfrage wurde in der App abgelehnt. Hier ist ein neuer Code.",
+      "expired": "Dieser Code ist abgelaufen. Hier ist ein neuer."
+    },
+    "abort": {
+      "cannot_connect": "Plumio ist nicht erreichbar. Versuche es gleich noch einmal.",
+      "already_configured": "Dieses Nest ist bereits verknüpft.",
+      "reauth_successful": "Erneut verknüpft.",
+      "wrong_nest": "Es wurde ein anderes Nest bestätigt. Bestätige dasselbe Nest wie zuvor."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Plumio-Optionen",
+        "data": {
+          "home_from_places": "Plumio-Orte vom Typ Zuhause als Zuhause werten",
+          "max_gps_accuracy": "Standorte ignorieren, die ungenauer sind als"
+        },
+        "data_description": {
+          "max_gps_accuracy": "0 akzeptiert alles."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Akku"
+      },
+      "speed": {
+        "name": "Geschwindigkeit"
+      },
+      "activity": {
+        "name": "Aktivität",
+        "state": {
+          "still": "Ruhend",
+          "walking": "Zu Fuß",
+          "running": "Laufend",
+          "on_bicycle": "Mit dem Rad",
+          "in_vehicle": "Im Fahrzeug",
+          "unknown": "Unbekannt"
+        }
+      },
+      "place": {
+        "name": "Ort"
+      },
+      "place_since": {
+        "name": "Am Ort seit"
+      },
+      "last_seen": {
+        "name": "Zuletzt gesehen"
+      },
+      "location_updated": {
+        "name": "Standort aktualisiert"
+      },
+      "heading": {
+        "name": "Richtung"
+      },
+      "gps_accuracy": {
+        "name": "GPS-Genauigkeit"
+      },
+      "distance_from_home": {
+        "name": "Entfernung von zu Hause"
+      },
+      "last_trip_distance": {
+        "name": "Strecke der letzten Fahrt"
+      },
+      "last_trip_max_speed": {
+        "name": "Höchsttempo der letzten Fahrt"
+      },
+      "last_trip_ended": {
+        "name": "Ende der letzten Fahrt"
+      },
+      "last_trip_events": {
+        "name": "Fahrereignisse der letzten Fahrt"
+      },
+      "members_home": {
+        "name": "Mitglieder zu Hause"
+      },
+      "plan": {
+        "name": "Tarif",
+        "state": {
+          "free": "Kostenlos",
+          "premium": "Premium",
+          "paused": "Pausiert"
+        }
+      },
+      "occupancy": {
+        "name": "Mitglieder hier"
+      },
+      "tag_battery": {
+        "name": "Batteriespannung"
+      },
+      "tag_last_seen": {
+        "name": "Zuletzt gesehen"
+      }
+    },
+    "binary_sensor": {
+      "charging": {
+        "name": "Lädt"
+      },
+      "online": {
+        "name": "Online"
+      },
+      "driving": {
+        "name": "Fährt"
+      },
+      "sharing": {
+        "name": "Teilt Standort"
+      },
+      "approximate": {
+        "name": "Nur ungefähre Zone"
+      },
+      "sos": {
+        "name": "SOS"
+      },
+      "security_alert": {
+        "name": "Sicherheitswarnung"
+      },
+      "not_reporting": {
+        "name": "Meldet sich nicht"
+      },
+      "live_connection": {
+        "name": "Live-Verbindung"
+      },
+      "anyone_home": {
+        "name": "Jemand zu Hause"
+      },
+      "everyone_home": {
+        "name": "Alle zu Hause"
+      },
+      "occupied": {
+        "name": "Belegt"
+      }
+    },
+    "button": {
+      "request_location": {
+        "name": "Standort anfordern"
+      },
+      "ring": {
+        "name": "Handy klingeln lassen"
+      },
+      "refresh_all": {
+        "name": "Alle aktualisieren"
+      }
+    },
+    "event": {
+      "activity_events": {
+        "name": "Ereignisse",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "arrival": "Angekommen",
+              "departure": "Gegangen",
+              "checkin": "Check-in",
+              "sos": "SOS",
+              "sos_resolved": "SOS beendet",
+              "crash": "Unfall erkannt",
+              "speed_alert": "Zu schnell",
+              "low_battery": "Akku schwach",
+              "trip_started": "Fahrt begonnen",
+              "trip_ended": "Fahrt beendet",
+              "trip_completed": "Fahrtübersicht",
+              "security": "Sicherheitswarnung",
+              "member_stale": "Meldet sich nicht mehr",
+              "member_back": "Meldet sich wieder"
+            }
+          }
+        }
+      },
+      "nest_events": {
+        "name": "Tag-Ereignisse",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "tag_seen": "Tag gesehen"
+            }
+          }
+        }
+      }
+    }
+  },
+  "selector": {
+    "place_type": {
+      "options": {
+        "home": "Zuhause",
+        "work": "Arbeit",
+        "school": "Schule",
+        "custom": "Sonstiges"
+      }
+    }
+  },
+  "exceptions": {
+    "premium_required": {
+      "message": "Dafür braucht der Besitzer des Nests Plumio Premium."
+    },
+    "actions_disabled": {
+      "message": "Der Admin des Nests hat Aktionen für diese Integration in der Plumio-App deaktiviert."
+    },
+    "rate_limited": {
+      "message": "Zu früh. Warte kurz und versuche es erneut."
+    },
+    "not_found": {
+      "message": "Plumio kennt dieses Mitglied oder diesen Ort nicht mehr."
+    },
+    "zone_limit": {
+      "message": "Das Nest hat sein Orte-Limit erreicht: {detail}"
+    },
+    "validation_error": {
+      "message": "Plumio hat die Daten abgelehnt: {detail}"
+    },
+    "request_failed": {
+      "message": "Plumio hat die Anfrage abgelehnt: {detail}"
+    },
+    "link_revoked": {
+      "message": "Dieses Nest ist nicht mehr verknüpft. Verknüpfe es auf der Integrationsseite erneut."
+    },
+    "cannot_connect": {
+      "message": "Plumio ist nicht erreichbar."
+    },
+    "location_not_requested": {
+      "message": "Nichts gesendet: Dieses Mitglied teilt gerade nicht, wurde eben erst gefragt oder hat kein erreichbares Handy."
+    },
+    "nest_not_found": {
+      "message": "Dieses Nest ist nicht verknüpft oder nicht geladen."
+    },
+    "nest_ambiguous": {
+      "message": "Mehrere Nester sind verknüpft: Gib an, welches."
+    },
+    "member_not_found": {
+      "message": "Dieses Gerät ist kein Plumio-Mitglied."
+    }
+  },
+  "services": {
+    "request_location": {
+      "name": "Standort anfordern",
+      "description": "Weckt das Handy eines Mitglieds, damit es einen frischen Standort meldet.",
+      "fields": {
+        "device_id": {
+          "name": "Mitglied",
+          "description": "Das Gerät des Mitglieds."
+        }
+      }
+    },
+    "ring_phone": {
+      "name": "Handy klingeln lassen",
+      "description": "Lässt das Handy eines Mitglieds klingeln, um es zu finden.",
+      "fields": {
+        "device_id": {
+          "name": "Mitglied",
+          "description": "Das Gerät des Mitglieds."
+        }
+      }
+    },
+    "stop_ring": {
+      "name": "Klingeln beenden",
+      "description": "Beendet das Klingeln eines Handys.",
+      "fields": {
+        "device_id": {
+          "name": "Mitglied",
+          "description": "Das Gerät des Mitglieds."
+        }
+      }
+    },
+    "create_place": {
+      "name": "Ort erstellen",
+      "description": "Fügt dem Nest einen Ort hinzu.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nest",
+          "description": "Nur bei mehr als einem verknüpften Nest nötig."
+        },
+        "name": {
+          "name": "Name",
+          "description": "Wie der Ort heißt."
+        },
+        "latitude": {
+          "name": "Breitengrad",
+          "description": "Breitengrad des Mittelpunkts."
+        },
+        "longitude": {
+          "name": "Längengrad",
+          "description": "Längengrad des Mittelpunkts."
+        },
+        "radius": {
+          "name": "Radius",
+          "description": "Radius in Metern."
+        },
+        "place_type": {
+          "name": "Typ",
+          "description": "Welche Art von Ort es ist."
+        }
+      }
+    },
+    "update_place": {
+      "name": "Ort bearbeiten",
+      "description": "Ändert einen Ort des Nests.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nest",
+          "description": "Nur bei mehr als einem verknüpften Nest nötig."
+        },
+        "place_id": {
+          "name": "Orts-ID",
+          "description": "Die Plumio-ID des Orts (der letzte Teil seiner Gerätekennung)."
+        },
+        "name": {
+          "name": "Name",
+          "description": "Wie der Ort heißt."
+        },
+        "latitude": {
+          "name": "Breitengrad",
+          "description": "Breitengrad des Mittelpunkts."
+        },
+        "longitude": {
+          "name": "Längengrad",
+          "description": "Längengrad des Mittelpunkts."
+        },
+        "radius": {
+          "name": "Radius",
+          "description": "Radius in Metern."
+        },
+        "place_type": {
+          "name": "Typ",
+          "description": "Welche Art von Ort es ist."
+        }
+      }
+    },
+    "delete_place": {
+      "name": "Ort löschen",
+      "description": "Entfernt einen Ort aus dem Nest.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nest",
+          "description": "Nur bei mehr als einem verknüpften Nest nötig."
+        },
+        "place_id": {
+          "name": "Orts-ID",
+          "description": "Die Plumio-ID des Orts (der letzte Teil seiner Gerätekennung)."
+        }
+      }
+    },
+    "import_zones": {
+      "name": "Zonen importieren",
+      "description": "Kopiert deine Home-Assistant-Zonen als Orte ins Nest und überspringt vorhandene Namen.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Nest",
+          "description": "Nur bei mehr als einem verknüpften Nest nötig."
+        }
+      }
+    },
+    "get_trips": {
+      "name": "Fahrten abrufen",
+      "description": "Gibt die letzten Fahrten eines Mitglieds zurück.",
+      "fields": {
+        "device_id": {
+          "name": "Mitglied",
+          "description": "Das Gerät des Mitglieds."
+        },
+        "limit": {
+          "name": "Limit",
+          "description": "Wie viele Fahrten zurückgegeben werden."
+        }
+      }
+    },
+    "get_driving_summary": {
+      "name": "Fahrübersicht abrufen",
+      "description": "Gibt die Fahrübersicht eines Mitglieds nach Zeitraum zurück.",
+      "fields": {
+        "device_id": {
+          "name": "Mitglied",
+          "description": "Das Gerät des Mitglieds."
+        }
+      }
+    },
+    "get_day_timeline": {
+      "name": "Tagesverlauf abrufen",
+      "description": "Gibt Route, Abschnitte und Aufenthalte eines Mitglieds für einen Tag zurück.",
+      "fields": {
+        "device_id": {
+          "name": "Mitglied",
+          "description": "Das Gerät des Mitglieds."
+        },
+        "date": {
+          "name": "Datum",
+          "description": "Der gewünschte Tag. Ohne Angabe heute."
+        }
+      }
+    }
+  }
+}
