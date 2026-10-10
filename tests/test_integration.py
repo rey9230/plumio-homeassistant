@@ -46,6 +46,8 @@ async def test_link_flow_waits_for_approval_then_creates_entry(hass: HomeAssista
         api.pair_poll = AsyncMock(side_effect=[{"status": "PENDING"}, approved])
 
         result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
+        assert result["step_id"] == "user"
+        result = await hass.config_entries.flow.async_configure(result["flow_id"], {"advanced": {}})
         assert result["type"] is FlowResultType.FORM
         assert result["step_id"] == "link"
         assert result["description_placeholders"]["code"] == "ABCD-EFGH"
@@ -71,6 +73,7 @@ async def test_denied_code_is_replaced_by_a_fresh_one(hass: HomeAssistant) -> No
         )
         api.pair_poll = AsyncMock(return_value={"status": "DENIED"})
         result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
+        result = await hass.config_entries.flow.async_configure(result["flow_id"], {"advanced": {}})
         result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
         assert result["errors"] == {"base": "denied"}
         assert api.pair_start.await_count == 2
@@ -93,6 +96,14 @@ async def test_entities_reflect_the_snapshot(hass: HomeAssistant, entry: MockCon
     assert hass.states.get("binary_sensor.casa_anyone_home").state == "on"
     assert hass.states.get("binary_sensor.casa_everyone_home").state == "off"
     assert hass.states.get("device_tracker.llaves").attributes["latitude"] == 27.9
+
+
+async def test_live_connection_is_on_before_any_event(
+    hass: HomeAssistant, entry: MockConfigEntry, client: AsyncMock
+) -> None:
+    """A quiet Nest sends nothing for minutes; the connection is still up."""
+    await _setup(hass, entry)
+    assert hass.states.get("binary_sensor.casa_live_connection").state == "on"
 
 
 async def test_paused_member_has_no_location_at_all(hass: HomeAssistant, entry: MockConfigEntry, client: AsyncMock) -> None:

@@ -19,6 +19,9 @@ from .const import (
 from .coordinator import PlumioConfigEntry, PlumioCoordinator
 from .entity import MemberEntity, TagEntity, async_add_as_they_appear
 
+ENTITY_ID_HOME = "zone.home"
+_HAS_IN_ZONES = hasattr(TrackerEntity, "in_zones")
+
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: PlumioConfigEntry, async_add_entities: AddEntitiesCallback
@@ -78,19 +81,26 @@ class MemberTracker(MemberEntity, TrackerEntity):
     def location_accuracy(self) -> int:
         return self._fix[2] if self._fix else 0
 
-    @property
-    def battery_level(self) -> int | None:
-        return self.member.get("batteryLevel")
-
-    @property
-    def location_name(self) -> str | None:
+    def _at_home_place(self) -> bool:
         """A Plumio place of type Home counts as home, with no zone to configure."""
         if not self.coordinator.config_entry.options.get(CONF_HOME_FROM_PLACES, DEFAULT_HOME_FROM_PLACES):
-            return None
+            return False
         place = self.coordinator.data.places.get(self.member.get("placeId") or "")
-        if place and place.get("type") == PLACE_TYPE_HOME and self._fix is not None:
-            return STATE_HOME
-        return None
+        return bool(place and place.get("type") == PLACE_TYPE_HOME and self._fix is not None)
+
+    # Home Assistant 2026.x replaced `location_name` with `in_zones`. Both are kept so
+    # the integration behaves the same on every supported version, without warnings.
+    if _HAS_IN_ZONES:
+
+        @property
+        def in_zones(self) -> list[str] | None:
+            return [ENTITY_ID_HOME] if self._at_home_place() else None
+
+    else:
+
+        @property
+        def location_name(self) -> str | None:
+            return STATE_HOME if self._at_home_place() else None
 
     @property
     def entity_picture(self) -> str | None:

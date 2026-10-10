@@ -2,9 +2,15 @@
   "config": {
     "step": {
       "user": {
-        "title": "Plumio server",
-        "data": {
-          "api_url": "API address"
+        "title": "Link Plumio",
+        "description": "Press Submit to get a code. The admin of your Nest approves it in the Plumio app; Home Assistant never sees a password.",
+        "sections": {
+          "advanced": {
+            "name": "Advanced",
+            "data": {
+              "api_url": "API address"
+            }
+          }
         }
       },
       "link": {

@@ -32,6 +32,17 @@ def tag_device_id(nest_id: str, tag_id: str) -> str:
     return f"{nest_id}_tag_{tag_id}"
 
 
+def via_nest(coordinator: PlumioCoordinator) -> dict[str, Any]:
+    """Hang a device under its Nest.
+
+    Home Assistant 2026.8 replaced `via_device` (an identifier) with `via_device_id`
+    (the registry id). The Nest's device is created at setup, so its id is known here.
+    """
+    if "via_device_id" in DeviceInfo.__annotations__ and coordinator.nest_device_id:
+        return {"via_device_id": coordinator.nest_device_id}
+    return {"via_device": (DOMAIN, nest_device_id(coordinator.nest_id))}
+
+
 class PlumioEntity(CoordinatorEntity[PlumioCoordinator]):
     """Common ground: has_entity_name and one unique id scheme."""
 
@@ -69,7 +80,7 @@ class MemberEntity(PlumioEntity):
             name=self.member.get("displayName") or "Plumio member",
             manufacturer=MANUFACTURER,
             model="Member",
-            via_device=(DOMAIN, nest_device_id(coordinator.nest_id)),
+            **via_nest(coordinator),
         )
 
     @property
@@ -93,7 +104,7 @@ class PlaceEntity(PlumioEntity):
             manufacturer=MANUFACTURER,
             model="Place",
             entry_type=DeviceEntryType.SERVICE,
-            via_device=(DOMAIN, nest_device_id(coordinator.nest_id)),
+            **via_nest(coordinator),
         )
 
     @property
@@ -116,7 +127,7 @@ class TagEntity(PlumioEntity):
             name=self.tag.get("name") or "Tag",
             manufacturer=MANUFACTURER,
             model="Plumio Tag",
-            via_device=(DOMAIN, nest_device_id(coordinator.nest_id)),
+            **via_nest(coordinator),
         )
 
     @property

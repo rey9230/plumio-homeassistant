@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.plumio.api import SseEvent
+from custom_components.plumio.api import STREAM_OPEN, SseEvent
 from custom_components.plumio.const import (
     CONF_API_URL,
     CONF_LINK_ID,
@@ -90,6 +90,7 @@ class FakeStream:
 
     async def events(self, last_event_id: str | None, read_timeout: float) -> AsyncIterator[SseEvent]:
         self.last_event_ids.append(last_event_id)
+        yield SseEvent(event=STREAM_OPEN, data={}, id=None)
         while True:
             yield await self.queue.get()
 

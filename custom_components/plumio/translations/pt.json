@@ -2,9 +2,15 @@
   "config": {
     "step": {
       "user": {
-        "title": "Servidor do Plumio",
-        "data": {
-          "api_url": "Endereço da API"
+        "title": "Vincular o Plumio",
+        "description": "Toque em Enviar para obter um código. Quem administra seu Ninho aprova no app do Plumio; o Home Assistant nunca vê uma senha.",
+        "sections": {
+          "advanced": {
+            "name": "Avançado",
+            "data": {
+              "api_url": "Endereço da API"
+            }
+          }
         }
       },
       "link": {
