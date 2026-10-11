@@ -1,18 +1,6 @@
 {
   "config": {
     "step": {
-      "user": {
-        "title": "Enlazar Plumio",
-        "description": "Pulsa Enviar para obtener un código. Quien administra tu Nido lo aprueba en la app de Plumio; Home Assistant nunca ve una contraseña.",
-        "sections": {
-          "advanced": {
-            "name": "Avanzado",
-            "data": {
-              "api_url": "Dirección de la API"
-            }
-          }
-        }
-      },
       "link": {
         "title": "Enlaza tu Nido",
         "description": "En el teléfono de quien administra el Nido, escanea este código con la cámara, o abre Plumio → Nido → Integraciones y escribe:\n\n## {code}\n\nApruébalo allí y luego pulsa **Enviar** aquí. El código vale 10 minutos.",

@@ -1,18 +1,6 @@
 {
   "config": {
     "step": {
-      "user": {
-        "title": "連結 Plumio",
-        "description": "按下傳送以取得代碼。由巢的管理員在 Plumio App 中核准；Home Assistant 永遠看不到密碼。",
-        "sections": {
-          "advanced": {
-            "name": "進階",
-            "data": {
-              "api_url": "API 位址"
-            }
-          }
-        }
-      },
       "link": {
         "title": "連結你的巢",
         "description": "用巢管理員的手機相機掃描這個條碼，或開啟 Plumio → 巢 → 整合並輸入：\n\n## {code}\n\n在手機上核准後，再按這裡的**傳送**。代碼有效時間為 10 分鐘。",

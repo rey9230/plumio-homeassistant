@@ -8,13 +8,13 @@ or PIN; then this flow collects a token of its own, scoped to that one Nest.
 from __future__ import annotations
 
 from collections.abc import Mapping
+import os
 from typing import Any
 
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, OptionsFlow
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import section
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import (
     BooleanSelector,
@@ -41,7 +41,9 @@ from .const import (
 )
 from .coordinator import PlumioConfigEntry
 
-SECTION_ADVANCED = "advanced"
+# Plumio has one server. This is only for developing the integration against another
+# one, and deliberately not something the person linking can see or type.
+ENV_API_URL = "PLUMIO_API_URL"
 
 
 class PlumioConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -50,7 +52,7 @@ class PlumioConfigFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     def __init__(self) -> None:
-        self._api_url = DEFAULT_API_URL
+        self._api_url = (os.environ.get(ENV_API_URL) or DEFAULT_API_URL).rstrip("/")
         self._pairing: dict[str, Any] | None = None
         self._reauth_entry: PlumioConfigEntry | None = None
 
@@ -63,21 +65,7 @@ class PlumioConfigFlow(ConfigFlow, domain=DOMAIN):
         return PlumioClient(async_get_clientsession(self.hass), self._api_url)
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        """Start. Nothing to fill in; a collapsed section allows a different server (testing)."""
-        if user_input is None:
-            return self.async_show_form(
-                step_id="user",
-                data_schema=vol.Schema(
-                    {
-                        vol.Required(SECTION_ADVANCED): section(
-                            vol.Schema({vol.Optional(CONF_API_URL, default=DEFAULT_API_URL): str}),
-                            {"collapsed": True},
-                        )
-                    }
-                ),
-            )
-        advanced = user_input.get(SECTION_ADVANCED) or {}
-        self._api_url = (advanced.get(CONF_API_URL) or DEFAULT_API_URL).rstrip("/")
+        """Start: straight to the code. There is nothing for the person to fill in."""
         return await self.async_step_link()
 
     async def async_step_reauth(self, entry_data: Mapping[str, Any]) -> ConfigFlowResult:

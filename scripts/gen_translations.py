@@ -15,10 +15,6 @@ OUT = Path(__file__).resolve().parent.parent / "custom_components" / "plumio"
 # path -> [en, es, de, fr, it, pt, zh-Hant]
 T: dict[str, list[str]] = {
     # ---------- config flow ----------
-    "config.step.user.title": ["Link Plumio", "Enlazar Plumio", "Plumio verknüpfen", "Associer Plumio", "Collega Plumio", "Vincular o Plumio", "連結 Plumio"],
-    "config.step.user.description": ["Press Submit to get a code. The admin of your Nest approves it in the Plumio app; Home Assistant never sees a password.", "Pulsa Enviar para obtener un código. Quien administra tu Nido lo aprueba en la app de Plumio; Home Assistant nunca ve una contraseña.", "Drücke Absenden, um einen Code zu erhalten. Wer dein Nest verwaltet, bestätigt ihn in der Plumio-App; Home Assistant sieht nie ein Passwort.", "Appuyez sur Envoyer pour obtenir un code. L'administrateur de votre Nid l'approuve dans l'app Plumio ; Home Assistant ne voit jamais de mot de passe.", "Premi Invia per ottenere un codice. Chi amministra il tuo Nido lo approva nell'app Plumio; Home Assistant non vede mai una password.", "Toque em Enviar para obter um código. Quem administra seu Ninho aprova no app do Plumio; o Home Assistant nunca vê uma senha.", "按下傳送以取得代碼。由巢的管理員在 Plumio App 中核准；Home Assistant 永遠看不到密碼。"],
-    "config.step.user.sections.advanced.name": ["Advanced", "Avanzado", "Erweitert", "Avancé", "Avanzate", "Avançado", "進階"],
-    "config.step.user.sections.advanced.data.api_url": ["API address", "Dirección de la API", "API-Adresse", "Adresse de l'API", "Indirizzo API", "Endereço da API", "API 位址"],
     "config.step.link.title": ["Link your Nest", "Enlaza tu Nido", "Nest verknüpfen", "Associer votre Nid", "Collega il tuo Nido", "Vincule seu Ninho", "連結你的巢"],
     "config.step.link.description": [
         "On the phone of the Nest's admin, scan this code with the camera, or open Plumio → Nest → Integrations and type:\n\n## {code}\n\nApprove it there, then press **Submit** here. The code is valid for 10 minutes.",
