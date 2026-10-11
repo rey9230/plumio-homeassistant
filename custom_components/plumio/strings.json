@@ -1,18 +1,6 @@
 {
   "config": {
     "step": {
-      "user": {
-        "title": "Link Plumio",
-        "description": "Press Submit to get a code. The admin of your Nest approves it in the Plumio app; Home Assistant never sees a password.",
-        "sections": {
-          "advanced": {
-            "name": "Advanced",
-            "data": {
-              "api_url": "API address"
-            }
-          }
-        }
-      },
       "link": {
         "title": "Link your Nest",
         "description": "On the phone of the Nest's admin, scan this code with the camera, or open Plumio → Nest → Integrations and type:\n\n## {code}\n\nApprove it there, then press **Submit** here. The code is valid for 10 minutes.",

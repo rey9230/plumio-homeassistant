@@ -1,18 +1,6 @@
 {
   "config": {
     "step": {
-      "user": {
-        "title": "Associer Plumio",
-        "description": "Appuyez sur Envoyer pour obtenir un code. L'administrateur de votre Nid l'approuve dans l'app Plumio ; Home Assistant ne voit jamais de mot de passe.",
-        "sections": {
-          "advanced": {
-            "name": "Avancé",
-            "data": {
-              "api_url": "Adresse de l'API"
-            }
-          }
-        }
-      },
       "link": {
         "title": "Associer votre Nid",
         "description": "Sur le téléphone de l'administrateur du Nid, scannez ce code avec l'appareil photo, ou ouvrez Plumio → Nid → Intégrations et saisissez :\n\n## {code}\n\nApprouvez-le là-bas, puis appuyez sur **Envoyer** ici. Le code est valable 10 minutes.",

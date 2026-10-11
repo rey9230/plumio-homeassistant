@@ -1,18 +1,6 @@
 {
   "config": {
     "step": {
-      "user": {
-        "title": "Plumio verknüpfen",
-        "description": "Drücke Absenden, um einen Code zu erhalten. Wer dein Nest verwaltet, bestätigt ihn in der Plumio-App; Home Assistant sieht nie ein Passwort.",
-        "sections": {
-          "advanced": {
-            "name": "Erweitert",
-            "data": {
-              "api_url": "API-Adresse"
-            }
-          }
-        }
-      },
       "link": {
         "title": "Nest verknüpfen",
         "description": "Scanne diesen Code mit der Kamera des Handys der Person, die das Nest verwaltet, oder öffne Plumio → Nest → Integrationen und gib ein:\n\n## {code}\n\nBestätige dort und drücke dann hier auf **Absenden**. Der Code gilt 10 Minuten.",

@@ -1,18 +1,6 @@
 {
   "config": {
     "step": {
-      "user": {
-        "title": "Vincular o Plumio",
-        "description": "Toque em Enviar para obter um código. Quem administra seu Ninho aprova no app do Plumio; o Home Assistant nunca vê uma senha.",
-        "sections": {
-          "advanced": {
-            "name": "Avançado",
-            "data": {
-              "api_url": "Endereço da API"
-            }
-          }
-        }
-      },
       "link": {
         "title": "Vincule seu Ninho",
         "description": "No telefone de quem administra o Ninho, escaneie este código com a câmera, ou abra Plumio → Ninho → Integrações e digite:\n\n## {code}\n\nAprove lá e depois toque em **Enviar** aqui. O código vale por 10 minutos.",

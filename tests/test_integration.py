@@ -46,9 +46,8 @@ async def test_link_flow_waits_for_approval_then_creates_entry(hass: HomeAssista
         api.pair_start = AsyncMock(return_value=pairing)
         api.pair_poll = AsyncMock(side_effect=[{"status": "PENDING"}, approved])
 
+        # No first screen asking for anything: the code is there on opening.
         result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
-        assert result["step_id"] == "user"
-        result = await hass.config_entries.flow.async_configure(result["flow_id"], {"advanced": {}})
         assert result["type"] is FlowResultType.FORM
         assert result["step_id"] == "link"
         assert result["description_placeholders"]["code"] == "ABCD-EFGH"
@@ -74,7 +73,6 @@ async def test_denied_code_is_replaced_by_a_fresh_one(hass: HomeAssistant) -> No
         )
         api.pair_poll = AsyncMock(return_value={"status": "DENIED"})
         result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
-        result = await hass.config_entries.flow.async_configure(result["flow_id"], {"advanced": {}})
         result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
         assert result["errors"] == {"base": "denied"}
         assert api.pair_start.await_count == 2

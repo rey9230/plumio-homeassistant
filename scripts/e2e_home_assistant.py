@@ -4,9 +4,10 @@ Drives a freshly started Home Assistant over its own HTTP API exactly as a perso
 through the UI — onboarding, "Add integration", the link step — and plays the Plumio
 admin's part against the backend. Then watches Home Assistant's states react.
 
-    python scripts/e2e_home_assistant.py http://127.0.0.1:8129 http://127.0.0.1:8089 http://host.docker.internal:8089
+    python scripts/e2e_home_assistant.py http://127.0.0.1:8129 http://127.0.0.1:8089
 
-The third argument is the backend's address as seen FROM Home Assistant.
+Home Assistant must run with the environment variable PLUMIO_API_URL set to the
+backend's address as seen from it (e.g. http://host.docker.internal:8089).
 """
 
 from __future__ import annotations
@@ -42,7 +43,7 @@ async def wait_until(probe, what: str, timeout: float = 30.0):
     check(False, what, f"(timed out after {timeout:.0f}s, last={last!r})")
 
 
-async def main(ha: str, backend: str, backend_from_ha: str) -> None:
+async def main(ha: str, backend: str) -> None:
     async with aiohttp.ClientSession() as s:
 
         async def api(method: str, url: str, token: str | None = None, **kw):
@@ -85,18 +86,10 @@ async def main(ha: str, backend: str, backend_from_ha: str) -> None:
             json={"name": "Casa", "type": "HOME", "lat": 27.95, "lng": -82.45, "radiusMeters": 200.0},
         )
 
-        # ---- "Add integration → Plumio", with the Advanced section pointing at this backend ----
-        flow = await api(
-            "POST",
-            f"{ha}/api/config/config_entries/flow",
-            hass,
-            json={"handler": "plumio"},
-        )
-        check(flow["type"] == "form" and flow["step_id"] == "user", "the flow opens (integration loaded by Home Assistant)")
-        flow = await api(
-            "POST", f"{ha}/api/config/config_entries/flow/{flow['flow_id']}", hass, json={"advanced": {"api_url": backend_from_ha}}
-        )
-        check(flow.get("step_id") == "link", "Home Assistant reached the backend and shows the link step", flow)
+        # ---- "Add integration → Plumio": the code is on screen at once ----
+        # Home Assistant must have been started with PLUMIO_API_URL pointing at the backend.
+        flow = await api("POST", f"{ha}/api/config/config_entries/flow", hass, json={"handler": "plumio"})
+        check(flow["type"] == "form" and flow["step_id"] == "link", "Home Assistant reached the backend and shows the link step", flow)
         code = flow["description_placeholders"]["code"]
         qr = [f for f in flow["data_schema"] if f["name"] == "qr"][0]["selector"]["qr_code"]["data"]
         check(len(code) == 9 and qr.endswith(code.replace("-", "")), "a code and a QR of the same link are on screen")
@@ -199,4 +192,4 @@ async def main(ha: str, backend: str, backend_from_ha: str) -> None:
 
 
 if __name__ == "__main__":
-    asyncio.run(main(sys.argv[1].rstrip("/"), sys.argv[2].rstrip("/"), sys.argv[3].rstrip("/")))
+    asyncio.run(main(sys.argv[1].rstrip("/"), sys.argv[2].rstrip("/")))
