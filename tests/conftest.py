@@ -60,6 +60,7 @@ def snapshot(**overrides: Any) -> dict[str, Any]:
         "nest": {"id": NEST_ID, "name": "Casa", "emoji": None, "paused": False},
         "capabilities": {
             "premium": True,
+            "location": True,
             "history": True,
             "trips": True,
             "tags": True,

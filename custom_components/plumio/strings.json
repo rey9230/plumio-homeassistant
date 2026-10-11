@@ -257,6 +257,12 @@
       "message": "That device is not a Plumio member."
     }
   },
+  "issues": {
+    "premium_locked": {
+      "title": "{nest}: unlock the map with Plumio Premium",
+      "description": "This Nest is on the free plan. Home Assistant gets who is home, which place each person is in, arrivals and departures, battery and SOS.\n\nWith Plumio Premium on the Nest owner's account it also gets each person's live position on the map, speed and activity, driving, trips, tags, and the actions: request a location, ring a phone and manage places. Those entities are already here, shown as unavailable."
+    }
+  },
   "services": {
     "request_location": {
       "name": "Request location",

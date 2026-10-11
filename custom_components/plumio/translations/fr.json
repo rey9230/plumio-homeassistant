@@ -257,6 +257,12 @@
       "message": "Cet appareil n'est pas un membre Plumio."
     }
   },
+  "issues": {
+    "premium_locked": {
+      "title": "{nest} : débloquez la carte avec Plumio Premium",
+      "description": "Ce Nid utilise l'offre gratuite. Home Assistant sait qui est à la maison, dans quel lieu se trouve chaque personne, les arrivées et départs, la batterie et les SOS.\n\nAvec Plumio Premium sur le compte du propriétaire du Nid, il reçoit aussi la position en direct de chaque personne sur la carte, la vitesse et l'activité, la conduite, les trajets, les tags et les actions : demander une position, faire sonner un téléphone et gérer les lieux. Ces entités sont déjà là, indisponibles."
+    }
+  },
   "services": {
     "request_location": {
       "name": "Demander la position",

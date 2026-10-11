@@ -13,7 +13,7 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import device_registry as dr, issue_registry as ir
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
@@ -35,6 +35,7 @@ from .const import (
     EVENT_TAG_SEEN,
     EVENT_TRIP_COMPLETED,
     POLL_INTERVAL_STREAM_DOWN,
+    PREMIUM_URL,
     POLL_INTERVAL_STREAM_UP,
     STALE_AFTER,
     STREAM_BACKOFF_MAX,
@@ -69,6 +70,14 @@ class PlumioData:
     @property
     def paused(self) -> bool:
         return bool(self.nest.get("paused"))
+
+    @property
+    def has_location(self) -> bool:
+        """Coordinates, speed and activity: what Premium adds on top of presence.
+
+        Without it the Nest still says who is home, in which place, and their battery.
+        """
+        return bool(self.capabilities.get("location", True))
 
     def members_at(self, place_id: str) -> list[dict[str, Any]]:
         return [m for m in self.members.values() if m.get("placeId") == place_id]
@@ -189,7 +198,26 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
         if data.capabilities.get("trips"):
             await self._load_last_trips(data)
         self._remove_gone_devices(data)
+        self._say_what_premium_unlocks(data)
         return data
+
+    def _say_what_premium_unlocks(self, data: PlumioData) -> None:
+        """One notice per free Nest, in Repairs; gone the moment its owner upgrades."""
+        issue_id = f"premium_locked_{self.nest_id}"
+        if data.capabilities.get("premium") or data.paused:
+            ir.async_delete_issue(self.hass, DOMAIN, issue_id)
+            return
+        ir.async_create_issue(
+            self.hass,
+            DOMAIN,
+            issue_id,
+            is_fixable=False,
+            is_persistent=False,
+            severity=ir.IssueSeverity.WARNING,
+            translation_key="premium_locked",
+            translation_placeholders={"nest": data.nest.get("name") or self.config_entry.title},
+            learn_more_url=PREMIUM_URL,
+        )
 
     async def _load_last_trips(self, data: PlumioData) -> None:
         """Last trip per member, once. After that `trip_completed` keeps it current."""
@@ -226,6 +254,7 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
         )
 
     async def async_shutdown(self) -> None:
+        ir.async_delete_issue(self.hass, DOMAIN, f"premium_locked_{self.nest_id}")
         if self._stream_task is not None:
             self._stream_task.cancel()
             self._stream_task = None

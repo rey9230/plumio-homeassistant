@@ -257,6 +257,12 @@
       "message": "Esse dispositivo não é um membro do Plumio."
     }
   },
+  "issues": {
+    "premium_locked": {
+      "title": "{nest}: desbloqueie o mapa com o Plumio Premium",
+      "description": "Este Ninho está no plano gratuito. O Home Assistant recebe quem está em casa, em que lugar cada pessoa está, chegadas e saídas, bateria e SOS.\n\nCom o Plumio Premium na conta do dono do Ninho ele recebe também a posição ao vivo de cada pessoa no mapa, velocidade e atividade, condução, viagens, tags e as ações: pedir a localização, fazer um telefone tocar e gerenciar lugares. Essas entidades já estão aqui, como indisponíveis."
+    }
+  },
   "services": {
     "request_location": {
       "name": "Pedir localização",

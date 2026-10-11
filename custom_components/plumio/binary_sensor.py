@@ -24,6 +24,8 @@ class MemberBinaryDescription(BinarySensorEntityDescription):
     """`is_on` gets the whole state and the member id: some answers live outside the member."""
 
     is_on: Callable[[PlumioData, str], bool | None]
+    # Needs Premium on the Nest; on a free one it is there, unavailable.
+    premium: bool = False
 
 
 def _member(data: PlumioData, user_id: str) -> dict[str, Any]:
@@ -45,6 +47,7 @@ MEMBER_BINARY_SENSORS: tuple[MemberBinaryDescription, ...] = (
     MemberBinaryDescription(
         key="driving",
         device_class=BinarySensorDeviceClass.MOVING,
+        premium=True,
         is_on=lambda d, u: bool(_member(d, u).get("inTrip")),
     ),
     MemberBinaryDescription(
@@ -54,6 +57,7 @@ MEMBER_BINARY_SENSORS: tuple[MemberBinaryDescription, ...] = (
     MemberBinaryDescription(
         key="approximate",
         entity_category=EntityCategory.DIAGNOSTIC,
+        premium=True,
         is_on=lambda d, u: bool(_member(d, u).get("approximate")),
     ),
     MemberBinaryDescription(
@@ -65,6 +69,7 @@ MEMBER_BINARY_SENSORS: tuple[MemberBinaryDescription, ...] = (
         key="security_alert",
         device_class=BinarySensorDeviceClass.PROBLEM,
         entity_category=EntityCategory.DIAGNOSTIC,
+        premium=True,
         is_on=lambda d, u: bool(_member(d, u).get("securityFlag")),
     ),
     MemberBinaryDescription(
@@ -97,6 +102,12 @@ class MemberBinarySensor(MemberEntity, BinarySensorEntity):
     def __init__(self, coordinator: PlumioCoordinator, user_id: str, description: MemberBinaryDescription) -> None:
         super().__init__(coordinator, user_id, description.key)
         self.entity_description = description
+
+    @property
+    def available(self) -> bool:
+        if self.entity_description.premium and not self.coordinator.data.has_location:
+            return False
+        return super().available
 
     @property
     def is_on(self) -> bool | None:

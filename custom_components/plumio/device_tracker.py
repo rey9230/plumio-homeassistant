@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from homeassistant.components.device_tracker import SourceType, TrackerEntity
-from homeassistant.const import STATE_HOME
+from homeassistant.const import STATE_HOME, STATE_NOT_HOME
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -81,12 +81,21 @@ class MemberTracker(MemberEntity, TrackerEntity):
     def location_accuracy(self) -> int:
         return self._fix[2] if self._fix else 0
 
+    def _presence_only(self) -> bool:
+        """A Nest without Premium: Plumio says who is home, not where anyone is."""
+        return not self.coordinator.data.has_location and bool(self.member.get("sharing"))
+
     def _at_home_place(self) -> bool:
         """A Plumio place of type Home counts as home, with no zone to configure."""
+        place = self.coordinator.data.places.get(self.member.get("placeId") or "")
+        if not (place and place.get("type") == PLACE_TYPE_HOME):
+            return False
+        if self._presence_only():
+            # No coordinates to match against a zone: the place is all there is.
+            return True
         if not self.coordinator.config_entry.options.get(CONF_HOME_FROM_PLACES, DEFAULT_HOME_FROM_PLACES):
             return False
-        place = self.coordinator.data.places.get(self.member.get("placeId") or "")
-        return bool(place and place.get("type") == PLACE_TYPE_HOME and self._fix is not None)
+        return self._fix is not None
 
     # Home Assistant 2026.x replaced `location_name` with `in_zones`. Both are kept so
     # the integration behaves the same on every supported version, without warnings.
@@ -94,13 +103,18 @@ class MemberTracker(MemberEntity, TrackerEntity):
 
         @property
         def in_zones(self) -> list[str] | None:
-            return [ENTITY_ID_HOME] if self._at_home_place() else None
+            if self._at_home_place():
+                return [ENTITY_ID_HOME]
+            # An empty list is "in no zone" — not_home. None would be "unknown".
+            return [] if self._presence_only() else None
 
     else:
 
         @property
         def location_name(self) -> str | None:
-            return STATE_HOME if self._at_home_place() else None
+            if self._at_home_place():
+                return STATE_HOME
+            return STATE_NOT_HOME if self._presence_only() else None
 
     @property
     def entity_picture(self) -> str | None:

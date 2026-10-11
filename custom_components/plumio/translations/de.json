@@ -257,6 +257,12 @@
       "message": "Dieses Gerät ist kein Plumio-Mitglied."
     }
   },
+  "issues": {
+    "premium_locked": {
+      "title": "{nest}: Karte mit Plumio Premium freischalten",
+      "description": "Dieses Nest nutzt den kostenlosen Tarif. Home Assistant erfährt, wer zu Hause ist, an welchem Ort sich jede Person befindet, Ankünfte und Abfahrten, Akkustand und SOS.\n\nMit Plumio Premium auf dem Konto des Nest-Besitzers kommen die Live-Position jeder Person auf der Karte, Geschwindigkeit und Aktivität, Fahren, Fahrten, Tags und die Aktionen hinzu: Standort anfordern, ein Telefon klingeln lassen und Orte verwalten. Diese Entitäten sind bereits hier, als nicht verfügbar."
+    }
+  },
   "services": {
     "request_location": {
       "name": "Standort anfordern",
