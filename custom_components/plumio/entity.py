@@ -14,6 +14,8 @@ from .const import DOMAIN
 from .coordinator import PlumioCoordinator
 
 MANUFACTURER = "Plumio"
+# The "Visit" link on each device page.
+GUIDE_URL = "https://www.useplumio.com/home-assistant"
 
 
 def nest_device_id(nest_id: str) -> str:
@@ -64,6 +66,7 @@ class NestEntity(PlumioEntity):
             identifiers={(DOMAIN, nest_device_id(coordinator.nest_id))},
             name=nest.get("name") or "Plumio",
             manufacturer=MANUFACTURER,
+            configuration_url=GUIDE_URL,
             model="Nest",
             entry_type=DeviceEntryType.SERVICE,
         )
@@ -79,6 +82,7 @@ class MemberEntity(PlumioEntity):
             identifiers={(DOMAIN, member_device_id(coordinator.nest_id, user_id))},
             name=self.member.get("displayName") or "Plumio member",
             manufacturer=MANUFACTURER,
+            configuration_url=GUIDE_URL,
             model="Member",
             **via_nest(coordinator),
         )
@@ -102,6 +106,7 @@ class PlaceEntity(PlumioEntity):
             identifiers={(DOMAIN, place_device_id(coordinator.nest_id, place_id))},
             name=self.place.get("name") or "Place",
             manufacturer=MANUFACTURER,
+            configuration_url=GUIDE_URL,
             model="Place",
             entry_type=DeviceEntryType.SERVICE,
             **via_nest(coordinator),
@@ -126,6 +131,7 @@ class TagEntity(PlumioEntity):
             identifiers={(DOMAIN, tag_device_id(coordinator.nest_id, tag_id))},
             name=self.tag.get("name") or "Tag",
             manufacturer=MANUFACTURER,
+            configuration_url=GUIDE_URL,
             model="Plumio Tag",
             **via_nest(coordinator),
         )

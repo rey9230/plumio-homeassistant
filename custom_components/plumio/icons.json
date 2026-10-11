@@ -1,0 +1,71 @@
+{
+  "entity": {
+    "device_tracker": {
+      "location": { "default": "mdi:account" },
+      "tag_location": { "default": "mdi:tag" }
+    },
+    "sensor": {
+      "activity": {
+        "default": "mdi:human",
+        "state": {
+          "still": "mdi:human-handsdown",
+          "walking": "mdi:walk",
+          "running": "mdi:run",
+          "on_bicycle": "mdi:bike",
+          "in_vehicle": "mdi:car"
+        }
+      },
+      "place": { "default": "mdi:map-marker" },
+      "place_since": { "default": "mdi:map-marker-check" },
+      "last_seen": { "default": "mdi:eye-check" },
+      "location_updated": { "default": "mdi:crosshairs-gps" },
+      "heading": { "default": "mdi:compass" },
+      "gps_accuracy": { "default": "mdi:crosshairs-question" },
+      "distance_from_home": { "default": "mdi:home-map-marker" },
+      "last_trip_distance": { "default": "mdi:map-marker-distance" },
+      "last_trip_max_speed": { "default": "mdi:speedometer" },
+      "last_trip_ended": { "default": "mdi:flag-checkered" },
+      "last_trip_events": { "default": "mdi:car-brake-alert" },
+      "members_home": { "default": "mdi:home-account" },
+      "plan": {
+        "default": "mdi:feather",
+        "state": { "premium": "mdi:crown", "paused": "mdi:pause-circle" }
+      },
+      "occupancy": { "default": "mdi:account-group" },
+      "tag_battery": { "default": "mdi:battery-heart-variant" },
+      "tag_last_seen": { "default": "mdi:eye-check" }
+    },
+    "binary_sensor": {
+      "driving": { "default": "mdi:car-off", "state": { "on": "mdi:car" } },
+      "sharing": { "default": "mdi:map-marker-off", "state": { "on": "mdi:map-marker-radius" } },
+      "approximate": { "default": "mdi:circle-outline", "state": { "on": "mdi:blur-radial" } },
+      "sos": { "default": "mdi:shield-check", "state": { "on": "mdi:alarm-light" } },
+      "security_alert": { "default": "mdi:shield-check", "state": { "on": "mdi:shield-alert" } },
+      "not_reporting": { "default": "mdi:signal", "state": { "on": "mdi:signal-off" } },
+      "anyone_home": { "default": "mdi:home-outline", "state": { "on": "mdi:home-account" } },
+      "everyone_home": { "default": "mdi:home-outline", "state": { "on": "mdi:home-heart" } },
+      "occupied": { "default": "mdi:map-marker-outline", "state": { "on": "mdi:map-marker-account" } }
+    },
+    "button": {
+      "request_location": { "default": "mdi:crosshairs-gps" },
+      "ring": { "default": "mdi:bell-ring" },
+      "refresh_all": { "default": "mdi:refresh" }
+    },
+    "event": {
+      "activity_events": { "default": "mdi:timeline-clock" },
+      "nest_events": { "default": "mdi:timeline-clock" }
+    }
+  },
+  "services": {
+    "request_location": { "service": "mdi:crosshairs-gps" },
+    "ring_phone": { "service": "mdi:bell-ring" },
+    "stop_ring": { "service": "mdi:bell-off" },
+    "create_place": { "service": "mdi:map-marker-plus" },
+    "update_place": { "service": "mdi:map-marker-radius" },
+    "delete_place": { "service": "mdi:map-marker-remove" },
+    "import_zones": { "service": "mdi:map-marker-multiple" },
+    "get_trips": { "service": "mdi:car-clock" },
+    "get_driving_summary": { "service": "mdi:steering" },
+    "get_day_timeline": { "service": "mdi:timeline-clock" }
+  }
+}
