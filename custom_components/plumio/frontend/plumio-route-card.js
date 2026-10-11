@@ -12,6 +12,7 @@
 
 const TEXT = {
   en: {
+    stop: "Stop",
     name: "Plumio — Day route",
     description: "Where a member of your Nest went on a given day.",
     today: "Today",
@@ -25,13 +26,13 @@ const TEXT = {
     start: "Start",
     end: "End",
     still_there: "still there",
-    somewhere: "On the way",
     previous: "Previous day",
     next: "Next day",
     entity: "Member",
     title: "Title (optional)",
   },
   es: {
+    stop: "Parada",
     name: "Plumio — Ruta del día",
     description: "Por dónde anduvo un miembro de tu Nido en un día.",
     today: "Hoy",
@@ -45,13 +46,13 @@ const TEXT = {
     start: "Inicio",
     end: "Fin",
     still_there: "sigue ahí",
-    somewhere: "En camino",
     previous: "Día anterior",
     next: "Día siguiente",
     entity: "Miembro",
     title: "Título (opcional)",
   },
   de: {
+    stop: "Aufenthalt",
     name: "Plumio — Tagesroute",
     description: "Wo ein Mitglied deines Nests an einem Tag unterwegs war.",
     today: "Heute",
@@ -65,13 +66,13 @@ const TEXT = {
     start: "Start",
     end: "Ende",
     still_there: "noch dort",
-    somewhere: "Unterwegs",
     previous: "Vorheriger Tag",
     next: "Nächster Tag",
     entity: "Mitglied",
     title: "Titel (optional)",
   },
   fr: {
+    stop: "Arrêt",
     name: "Plumio — Trajet du jour",
     description: "Où un membre de votre Nid s’est déplacé un jour donné.",
     today: "Aujourd’hui",
@@ -85,13 +86,13 @@ const TEXT = {
     start: "Départ",
     end: "Arrivée",
     still_there: "toujours sur place",
-    somewhere: "En route",
     previous: "Jour précédent",
     next: "Jour suivant",
     entity: "Membre",
     title: "Titre (facultatif)",
   },
   it: {
+    stop: "Sosta",
     name: "Plumio — Percorso del giorno",
     description: "Dove è stato un membro del tuo Nido in un dato giorno.",
     today: "Oggi",
@@ -105,13 +106,13 @@ const TEXT = {
     start: "Inizio",
     end: "Fine",
     still_there: "ancora lì",
-    somewhere: "In viaggio",
     previous: "Giorno precedente",
     next: "Giorno successivo",
     entity: "Membro",
     title: "Titolo (facoltativo)",
   },
   pt: {
+    stop: "Parada",
     name: "Plumio — Rota do dia",
     description: "Por onde um membro do seu Ninho andou em um dia.",
     today: "Hoje",
@@ -125,13 +126,13 @@ const TEXT = {
     start: "Início",
     end: "Fim",
     still_there: "ainda lá",
-    somewhere: "A caminho",
     previous: "Dia anterior",
     next: "Dia seguinte",
     entity: "Membro",
     title: "Título (opcional)",
   },
   "zh-Hant": {
+    stop: "停留點",
     name: "Plumio — 當日路線",
     description: "巢中某位成員在某一天去過哪些地方。",
     today: "今天",
@@ -145,7 +146,6 @@ const TEXT = {
     start: "起點",
     end: "終點",
     still_there: "仍在此處",
-    somewhere: "途中",
     previous: "前一天",
     next: "後一天",
     entity: "成員",
@@ -160,6 +160,9 @@ function textFor(language) {
 }
 
 const REFRESH_MS = 5 * 60 * 1000;
+// What the server calls a stop that is at no saved place. It is a marker, not a name:
+// it arrives in Spanish whatever the language, so it is swapped for the local word.
+const UNNAMED_STOP = "Estancia";
 const SIMPLIFY_METERS = 25;
 
 /** Douglas-Peucker over a short route: drops the points a straight line already covers. */
@@ -308,6 +311,10 @@ class PlumioRouteCard extends HTMLElement {
     return `${new Intl.NumberFormat(this._hass.locale?.language, { maximumFractionDigits: digits }).format(value)} ${
       imperial ? "mi" : "km"
     }`;
+  }
+
+  _place(name) {
+    return !name || name === UNNAMED_STOP ? this._t.stop : name;
   }
 
   _duration(seconds) {
@@ -472,14 +479,14 @@ class PlumioRouteCard extends HTMLElement {
       ...stays.map((s) => ({
         at: s.arrivalAt,
         leg: false,
-        title: s.placeName,
+        title: this._place(s.placeName),
         detail: this._duration(s.durationSeconds || 0),
         when: `${this._time(s.arrivalAt)} – ${s.departureAt ? this._time(s.departureAt) : t.still_there}`,
       })),
       ...legs.map((l) => ({
         at: l.startedAt,
         leg: true,
-        title: `${l.fromName || t.somewhere} → ${l.toName || t.somewhere}`,
+        title: `${this._place(l.fromName)} → ${this._place(l.toName)}`,
         detail: this._distance(l.distanceMeters || 0),
         when: `${this._time(l.startedAt)} – ${this._time(l.endedAt)}`,
       })),
@@ -533,7 +540,7 @@ class PlumioRouteCard extends HTMLElement {
     for (const stay of data.stays || []) {
       if (stay.lat == null || stay.lng == null) continue;
       const point = [stay.lat, stay.lng];
-      paths.push({ name: stay.placeName, color: stop, points: [{ point, timestamp: new Date(stay.arrivalAt) }] });
+      paths.push({ name: this._place(stay.placeName), color: stop, points: [{ point, timestamp: new Date(stay.arrivalAt) }] });
       bounds.push(point);
     }
 
