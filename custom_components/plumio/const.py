@@ -85,3 +85,6 @@ PLACE_TYPE_HOME = "HOME"
 ATTR_MEMBER_ID = "member_id"
 ATTR_PLACE_ID = "place_id"
 ATTR_NEST_ID = "nest_id"
+
+# Where a free Nest is told what Premium adds.
+PREMIUM_URL = "https://www.useplumio.com/home-assistant"

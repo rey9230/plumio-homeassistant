@@ -257,6 +257,12 @@
       "message": "Quel dispositivo non è un membro Plumio."
     }
   },
+  "issues": {
+    "premium_locked": {
+      "title": "{nest}: sblocca la mappa con Plumio Premium",
+      "description": "Questo Nido usa il piano gratuito. Home Assistant sa chi è a casa, in quale luogo si trova ogni persona, arrivi e partenze, batteria e SOS.\n\nCon Plumio Premium sull'account del proprietario del Nido riceve anche la posizione in tempo reale di ogni persona sulla mappa, velocità e attività, guida, viaggi, tag e le azioni: richiedere la posizione, far squillare un telefono e gestire i luoghi. Quelle entità sono già qui, non disponibili."
+    }
+  },
   "services": {
     "request_location": {
       "name": "Richiedi posizione",

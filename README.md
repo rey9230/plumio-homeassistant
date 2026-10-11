@@ -20,19 +20,27 @@ Only an admin of the Nest can link it. Everyone in the Nest is told when it is l
 
 | Device | Entities |
 |---|---|
-| Each member | Device tracker · battery · speed · activity · place · at place since · last seen · distance from home · charging · online · driving · sharing location · approximate area · SOS · security alert · not reporting · events |
-| Each member (Premium) | Last trip distance, top speed, end time and driving events · *Request location* and *Ring phone* buttons |
+| Each member | Device tracker (home / away) · battery · charging · place · at place since · last seen · online · sharing location · SOS · not reporting · events |
+| Each member (Premium) | Position on the map · speed · activity · driving · distance from home · approximate area · security alert · last trip distance, top speed, end time and driving events · *Request location* and *Ring phone* buttons |
 | The Nest | Members home · anyone home · everyone home · plan · live connection · *Refresh everyone* button |
 | Each place | Members here (with names) · occupied |
 | Each tag (Premium) | Device tracker of where it was last heard · battery voltage · last seen |
 
 A Plumio place of type *Home* counts as `home` without configuring a zone (can be turned off in the options).
 
+### Free and Premium
+
+On a free Nest, Home Assistant knows **who is home**, **which place each person is in**, **arrivals and departures**, **battery** and **SOS** — all live. That is enough for "lights on when the first person arrives".
+
+Plumio Premium on the Nest owner's account adds the live position on the map, speed and activity, driving, trips, tags and the actions. On a free Nest those entities are still created, shown as *unavailable*, and a notice in *Settings → Repairs* says what Premium unlocks. They come alive on their own when the owner upgrades; nothing to reconfigure.
+
 ### Events
 
 Each member has an event entity, and every event is also fired on the bus as `plumio_event`:
 
-`arrival` · `departure` · `checkin` · `sos` · `sos_resolved` · `crash` · `speed_alert` · `low_battery` · `trip_started` · `trip_ended` · `trip_completed` · `security` · `member_stale` · `member_back` · `tag_seen`
+`arrival` · `departure` · `sos` · `sos_resolved` · `crash` · `low_battery` · `member_stale` · `member_back`
+
+and, with Premium: `checkin` · `speed_alert` · `security` · `trip_started` · `trip_ended` · `trip_completed` · `tag_seen`
 
 ```yaml
 automation:
@@ -69,7 +77,7 @@ automation:
 | `plumio.import_zones` | Copies your Home Assistant zones into the Nest as places |
 | `plumio.get_trips` / `get_driving_summary` / `get_day_timeline` | Return data for templates and scripts |
 
-Actions and trip data need Plumio Premium on the Nest owner's account, and the admin can switch actions off for the integration from the app.
+Actions and trip data need Plumio Premium on the Nest owner's account (see *Free and Premium* above), and the admin can switch actions off for the integration from the app.
 
 ## Good to know
 

@@ -33,7 +33,11 @@ ACTIVITIES = ["still", "walking", "running", "on_bicycle", "in_vehicle", "unknow
 
 @dataclass(frozen=True, kw_only=True)
 class MemberSensorDescription(SensorEntityDescription):
-    """`value` reads from the member dict; `premium` hides it on free Nests."""
+    """`value` reads from the member dict; `premium` ones need the Nest to have Premium.
+
+    They are still created on a free Nest, unavailable: seeing what is there to unlock
+    is the point.
+    """
 
     value: Callable[[dict[str, Any]], Any]
     premium: bool = False
@@ -62,12 +66,14 @@ MEMBER_SENSORS: tuple[MemberSensorDescription, ...] = (
         suggested_unit_of_measurement=UnitOfSpeed.KILOMETERS_PER_HOUR,
         suggested_display_precision=0,
         state_class=SensorStateClass.MEASUREMENT,
+        premium=True,
         value=lambda m: m.get("speed"),
     ),
     MemberSensorDescription(
         key="activity",
         device_class=SensorDeviceClass.ENUM,
         options=ACTIVITIES,
+        premium=True,
         value=_activity,
     ),
     MemberSensorDescription(key="place", value=lambda m: m.get("placeName")),
@@ -85,6 +91,7 @@ MEMBER_SENSORS: tuple[MemberSensorDescription, ...] = (
         key="location_updated",
         device_class=SensorDeviceClass.TIMESTAMP,
         entity_category=EntityCategory.DIAGNOSTIC,
+        premium=True,
         value=lambda m: parse_ts(m.get("locationUpdatedAt")),
     ),
     MemberSensorDescription(
@@ -92,6 +99,7 @@ MEMBER_SENSORS: tuple[MemberSensorDescription, ...] = (
         native_unit_of_measurement=DEGREE,
         suggested_display_precision=0,
         entity_registry_enabled_default=False,
+        premium=True,
         value=lambda m: m.get("heading"),
     ),
     MemberSensorDescription(
@@ -101,6 +109,7 @@ MEMBER_SENSORS: tuple[MemberSensorDescription, ...] = (
         suggested_display_precision=0,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
+        premium=True,
         value=lambda m: m.get("accuracy"),
     ),
 )
@@ -174,6 +183,12 @@ class MemberSensor(MemberEntity, SensorEntity):
         self.entity_description = description
 
     @property
+    def available(self) -> bool:
+        if self.entity_description.premium and not self.coordinator.data.has_location:
+            return False
+        return super().available
+
+    @property
     def native_value(self) -> Any:
         return self.entity_description.value(self.member)
 
@@ -189,6 +204,10 @@ class DistanceFromHomeSensor(MemberEntity, SensorEntity):
 
     def __init__(self, coordinator: PlumioCoordinator, user_id: str) -> None:
         super().__init__(coordinator, user_id, "distance_from_home")
+
+    @property
+    def available(self) -> bool:
+        return super().available and self.coordinator.data.has_location
 
     @property
     def native_value(self) -> float | None:

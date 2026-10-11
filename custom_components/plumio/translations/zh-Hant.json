@@ -257,6 +257,12 @@
       "message": "該裝置不是 Plumio 成員。"
     }
   },
+  "issues": {
+    "premium_locked": {
+      "title": "{nest}：使用 Plumio Premium 解鎖地圖",
+      "description": "此巢使用免費方案。Home Assistant 會收到誰在家、每個人在哪個地點、抵達與離開、電量以及 SOS。\n\n巢擁有者訂閱 Plumio Premium 後，還會收到每個人在地圖上的即時位置、速度與活動、駕駛狀態、行程、追蹤器，以及各項操作：請求位置、讓手機響鈴與管理地點。這些實體已經在這裡，顯示為無法使用。"
+    }
+  },
   "services": {
     "request_location": {
       "name": "要求更新位置",
