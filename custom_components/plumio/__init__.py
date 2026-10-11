@@ -38,6 +38,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlumioConfigEntry) -> bo
         identifiers={(DOMAIN, coordinator.nest_id)},
         name=coordinator.data.nest.get("name") or entry.title,
         manufacturer="Plumio",
+        configuration_url="https://www.useplumio.com/home-assistant",
         model="Nest",
         entry_type=dr.DeviceEntryType.SERVICE,
     )
