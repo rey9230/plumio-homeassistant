@@ -28,6 +28,19 @@ Only an admin of the Nest can link it. Everyone in the Nest is told when it is l
 
 A Plumio place of type *Home* counts as `home` without configuring a zone (can be turned off in the options).
 
+### Day route card
+
+A dashboard card that draws where a member went on a given day: the route, each trip between two stops, and the stops, with arrows to move between days. It reads the day from Plumio, so it also shows the days before the Nest was linked. Needs Premium.
+
+Add it from the dashboard's card picker (*Plumio — Day route*), or by hand:
+
+```yaml
+type: custom:plumio-route-card
+entity: device_tracker.camila
+```
+
+Nothing to install: the card comes with the integration.
+
 ### Free and Premium
 
 On a free Nest, Home Assistant knows **who is home**, **which place each person is in**, **arrivals and departures**, **battery** and **SOS** — all live. That is enough for "lights on when the first person arrives".

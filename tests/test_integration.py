@@ -341,6 +341,24 @@ async def test_free_nest_is_told_what_premium_unlocks_until_it_upgrades(
     assert hass.states.get("sensor.camila_speed").state != "unavailable"
 
 
+# ---------- dashboard card ----------
+
+
+async def test_the_route_card_file_is_a_real_script() -> None:
+    """Served as-is to every browser: a syntax slip here blanks the card for everyone."""
+    from pathlib import Path
+
+    source = (Path(__file__).parent.parent / "custom_components" / "plumio" / "frontend" / "plumio-route-card.js").read_text(
+        encoding="utf-8"
+    )
+    assert 'customElements.define("plumio-route-card"' in source
+    assert "get_day_timeline" in source
+    # Draws through ha-map's public interface only; the engine underneath changes.
+    assert "leafletMap" not in source
+    for lang in ("en:", "es:", "de:", "fr:", "it:", "pt:", '"zh-Hant":'):
+        assert f"  {lang} {{" in source, lang
+
+
 # ---------- lifecycle ----------
 
 
