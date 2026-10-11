@@ -1,13 +1,20 @@
 {
   "domain": "plumio",
   "name": "Plumio",
-  "codeowners": ["@rey9230"],
+  "after_dependencies": [
+    "frontend"
+  ],
+  "codeowners": [
+    "@rey9230"
+  ],
   "config_flow": true,
-  "dependencies": [],
+  "dependencies": [
+    "http"
+  ],
   "documentation": "https://www.useplumio.com/home-assistant",
   "integration_type": "hub",
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/rey9230/plumio-homeassistant/issues",
   "requirements": [],
-  "version": "0.2.1"
+  "version": "0.3.0"
 }

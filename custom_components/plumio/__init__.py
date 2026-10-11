@@ -2,15 +2,22 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv, device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.typing import ConfigType
+from homeassistant.loader import async_get_integration
 
 from .api import PlumioClient
 from .const import CONF_API_URL, CONF_TOKEN, DEFAULT_API_URL, DOMAIN, PLATFORMS
 from .coordinator import PlumioConfigEntry, PlumioCoordinator
 from .services import async_setup_services
+
+# Where the dashboard card is served from.
+CARD_URL = "/plumio_static/plumio-route-card.js"
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
@@ -18,7 +25,28 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Register the domain services once, whatever the number of linked Nests."""
     async_setup_services(hass)
+    await _async_register_card(hass)
     return True
+
+
+async def _async_register_card(hass: HomeAssistant) -> None:
+    """Serve the day-route card and load it in every dashboard, with nothing to install.
+
+    The version in the address makes browsers fetch the new file after an update
+    instead of keeping the old one for a day.
+    """
+    if hass.http is None:
+        return
+    integration = await async_get_integration(hass, DOMAIN)
+    await hass.http.async_register_static_paths(
+        [StaticPathConfig(CARD_URL, str(Path(__file__).parent / "frontend" / "plumio-route-card.js"), False)]
+    )
+    # No dashboards to load it into (a Home Assistant running without its frontend).
+    if "frontend" not in hass.config.components:
+        return
+    from homeassistant.components.frontend import add_extra_js_url  # noqa: PLC0415
+
+    add_extra_js_url(hass, f"{CARD_URL}?v={integration.version}")
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: PlumioConfigEntry) -> bool:
