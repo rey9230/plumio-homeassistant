@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import random
 from typing import Any
@@ -49,6 +49,36 @@ type PlumioConfigEntry = ConfigEntry[PlumioCoordinator]
 
 # What a location fix carries and a heartbeat does not.
 _LOCATION_KEYS = frozenset({"lat", "lng", "accuracy", "speed", "heading", "locationUpdatedAt", "userActivity"})
+
+# A 401 without the server's "token is dead" code is not proof the link is gone (an
+# infrastructure hiccup can surface as one): only this many in a row ask for a new link.
+AUTH_STRIKES_BEFORE_REAUTH = 3
+
+# A member whose last trip could not be read is not asked again on every poll.
+TRIP_RETRY_AFTER = timedelta(minutes=30)
+
+# What the trip sensors read. Nothing else of a trip is kept: a trip from the API also
+# carries its route (polyline, bounding box), and that has no business in the state or
+# in diagnostics.
+_TRIP_KEYS = (
+    "startedAt",
+    "endedAt",
+    "distanceMeters",
+    "maxSpeed",
+    "hardBrakingCount",
+    "rapidAccelCount",
+    "speedingCount",
+    "originName",
+    "destName",
+)
+
+
+def trip_summary(trip: dict[str, Any] | None) -> dict[str, Any]:
+    """Only the fields the trip sensors use."""
+    if not trip:
+        return {}
+    return {k: trip[k] for k in _TRIP_KEYS if k in trip}
+
 
 # (event type, member id or None, payload)
 EventListener = Callable[[str, str | None, dict[str, Any]], None]
@@ -152,7 +182,7 @@ def apply_event(data: PlumioData, event: str, user_id: str | None, payload: dict
     elif event == EVENT_MEMBER_BACK and user_id:
         data.stale.discard(user_id)
     elif event == EVENT_TRIP_COMPLETED and user_id:
-        data.last_trip[user_id] = dict(payload)
+        data.last_trip[user_id] = trip_summary(payload)
     elif event == EVENT_TAG_SEEN:
         tag = data.tags.get(payload.get("tagId", ""))
         if tag is None:
@@ -184,6 +214,8 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
         self._last_event_id: str | None = None
         self._stream_task: asyncio.Task[None] | None = None
         self._event_listeners: list[EventListener] = []
+        self._auth_strikes = 0
+        self._trip_retry_at: dict[str, datetime] = {}
 
     # ---------- snapshot ----------
 
@@ -191,9 +223,12 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
         try:
             raw = await self.client.snapshot()
         except PlumioAuthError as err:
-            raise ConfigEntryAuthFailed(str(err)) from err
+            if self._auth_rejected(err):
+                raise ConfigEntryAuthFailed(str(err)) from err
+            raise UpdateFailed(str(err)) from err
         except PlumioError as err:
             raise UpdateFailed(str(err)) from err
+        self._auth_strikes = 0
         data = snapshot_to_data(raw, self.data, dt_util.utcnow())
         if data.capabilities.get("trips"):
             await self._load_last_trips(data)
@@ -219,16 +254,37 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
             learn_more_url=PREMIUM_URL,
         )
 
+    def _auth_rejected(self, err: PlumioAuthError) -> bool:
+        """True when a 401 means the link is really gone and a new one is needed."""
+        if err.definitive:
+            return True
+        self._auth_strikes += 1
+        return self._auth_strikes >= AUTH_STRIKES_BEFORE_REAUTH
+
     async def _load_last_trips(self, data: PlumioData) -> None:
-        """Last trip per member, once. After that `trip_completed` keeps it current."""
-        for user_id in data.members:
-            if user_id in data.last_trip:
+        """Last trip per member, once. After that `trip_completed` keeps it current.
+
+        All members at once, and one that failed waits a while before being asked again.
+        """
+        now = dt_util.utcnow()
+        todo = [
+            user_id
+            for user_id in data.members
+            if user_id not in data.last_trip and self._trip_retry_at.get(user_id, now) <= now
+        ]
+        if not todo:
+            return
+        results = await asyncio.gather(
+            *(self.client.trips(user_id, limit=1) for user_id in todo), return_exceptions=True
+        )
+        for user_id, result in zip(todo, results, strict=True):
+            if isinstance(result, PlumioError):
+                self._trip_retry_at[user_id] = now + TRIP_RETRY_AFTER
                 continue
-            try:
-                trips = await self.client.trips(user_id, limit=1)
-            except PlumioError:
-                continue
-            data.last_trip[user_id] = trips[0] if trips else {}
+            if isinstance(result, BaseException):
+                raise result
+            self._trip_retry_at.pop(user_id, None)
+            data.last_trip[user_id] = trip_summary(result[0]) if result else {}
 
     def _remove_gone_devices(self, data: PlumioData) -> None:
         """Members, places and tags that left the Nest take their devices with them."""
@@ -265,16 +321,20 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
         while True:
             try:
                 async for event in self.client.events(self._last_event_id, STREAM_READ_TIMEOUT):
+                    self._auth_strikes = 0
                     if not self.stream_connected:
                         self._set_stream_connected(True)
                     backoff = STREAM_BACKOFF_MIN
                     if event.event != STREAM_OPEN:
                         await self._handle_stream_event(event)
                 # The server closed the stream cleanly (link revoked, deploy…): reconnect.
-            except PlumioAuthError:
-                self._set_stream_connected(False)
-                self.config_entry.async_start_reauth(self.hass)
-                return
+            except PlumioAuthError as err:
+                if self._auth_rejected(err):
+                    self._set_stream_connected(False)
+                    self.config_entry.async_start_reauth(self.hass)
+                    return
+                # Not proof the link is gone: keep trying, with the usual backoff.
+                _LOGGER.debug("Plumio stream got a 401 without a reason; retrying")
             except PlumioConnectionError as err:
                 _LOGGER.debug("Plumio stream dropped: %s", err)
             except PlumioError as err:

@@ -1,10 +1,12 @@
-"""The SSE parser: the one piece of protocol this integration implements by hand."""
+"""The SSE parser, and how HTTP errors are classified."""
 
 from __future__ import annotations
 
 from collections.abc import AsyncIterator
 
-from custom_components.plumio.api import parse_sse
+import pytest
+
+from custom_components.plumio.api import PlumioAuthError, PlumioClient, PlumioConnectionError, parse_sse
 
 
 async def _lines(text: str) -> AsyncIterator[bytes]:
@@ -39,3 +41,28 @@ async def test_crlf_and_space_after_colon() -> None:
     events = await _parse('id: 3-1\r\nevent: sos\r\ndata: {"a": 1}\r\n\r\n')
     assert events[0].id == "3-1"
     assert events[0].data == {"a": 1}
+
+
+class _Resp:
+    def __init__(self, status: int, body: str) -> None:
+        self.status = status
+        self._body = body
+        self.headers: dict[str, str] = {}
+
+    async def text(self) -> str:
+        return self._body
+
+
+async def test_401_with_the_token_code_is_definitive() -> None:
+    with pytest.raises(PlumioAuthError) as err:
+        await PlumioClient._raise_for_status(_Resp(401, '{"code": "integration_token_invalid"}'))  # type: ignore[arg-type]
+    assert err.value.definitive
+
+    with pytest.raises(PlumioAuthError) as err:
+        await PlumioClient._raise_for_status(_Resp(401, ""))  # type: ignore[arg-type]
+    assert not err.value.definitive
+
+
+async def test_503_is_a_connection_error_not_an_auth_one() -> None:
+    with pytest.raises(PlumioConnectionError):
+        await PlumioClient._raise_for_status(_Resp(503, '{"code": "unavailable"}'))  # type: ignore[arg-type]

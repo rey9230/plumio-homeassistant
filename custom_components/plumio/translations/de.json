@@ -17,9 +17,9 @@
     },
     "abort": {
       "cannot_connect": "Plumio ist nicht erreichbar. Versuche es gleich noch einmal.",
-      "already_configured": "Dieses Nest ist bereits verknüpft.",
+      "already_configured": "Dieses Nest ist bereits verknüpft. Die gerade bestätigte Verknüpfung wird nicht verwendet: Trenne sie in der Plumio-App (Nest → Integrationen).",
       "reauth_successful": "Erneut verknüpft.",
-      "wrong_nest": "Es wurde ein anderes Nest bestätigt. Bestätige dasselbe Nest wie zuvor."
+      "wrong_nest": "Es wurde ein anderes Nest bestätigt. Trenne diese Verknüpfung in der Plumio-App (Nest → Integrationen) und bestätige dasselbe Nest wie zuvor."
     }
   },
   "options": {

@@ -92,3 +92,16 @@ def test_trip_completed_becomes_last_trip() -> None:
     data = _data()
     apply_event(data, "trip_completed", CAMILA, {"distanceMeters": 5200.0, "maxSpeed": 22.0}, None)
     assert data.last_trip[CAMILA]["distanceMeters"] == 5200.0
+
+
+def test_last_trip_keeps_no_route() -> None:
+    """A trip's route never lands in the state (nor, from there, in diagnostics)."""
+    data = _data()
+    apply_event(
+        data,
+        "trip_completed",
+        CAMILA,
+        {"distanceMeters": 1.0, "previewPolyline": "abc", "boundingBox": {"minLat": 1}, "tripId": "t1"},
+        None,
+    )
+    assert data.last_trip[CAMILA] == {"distanceMeters": 1.0}

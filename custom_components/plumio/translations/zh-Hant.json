@@ -17,9 +17,9 @@
     },
     "abort": {
       "cannot_connect": "無法連線到 Plumio。請稍後再試。",
-      "already_configured": "這個巢已經連結。",
+      "already_configured": "這個巢已經連結。你剛核准的連結不會被使用：請在 Plumio App（巢 → 整合）中中斷它。",
       "reauth_successful": "已重新連結。",
-      "wrong_nest": "核准的是另一個巢。請核准先前連結的同一個巢。"
+      "wrong_nest": "核准的是另一個巢。請在 Plumio App（巢 → 整合）中中斷那個連結，然後核准先前連結的同一個巢。"
     }
   },
   "options": {

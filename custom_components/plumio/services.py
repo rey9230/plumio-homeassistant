@@ -10,7 +10,7 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import ATTR_DEVICE_ID, ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, SupportsResponse, callback
-from homeassistant.exceptions import ServiceValidationError
+from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import config_validation as cv, device_registry as dr
 from homeassistant.util import dt as dt_util
 
@@ -146,27 +146,39 @@ def async_setup_services(hass: HomeAssistant) -> None:
         coordinator = _coordinator_for_entry(hass, call)
         existing = {str(p.get("name", "")).casefold() for p in coordinator.data.places.values()}
         created: list[str] = []
+        failed: list[dict[str, str]] = []
+        first_error: HomeAssistantError | None = None
         for state in hass.states.async_all("zone"):
             name = state.name
             lat, lng = state.attributes.get(ATTR_LATITUDE), state.attributes.get(ATTR_LONGITUDE)
             if lat is None or lng is None or name.casefold() in existing or state.attributes.get("passive"):
                 continue
-            await run_action(
-                coordinator.client.create_place(
-                    {
-                        "name": name[:60],
-                        "lat": lat,
-                        "lng": lng,
-                        "radiusMeters": float(state.attributes.get(ATTR_RADIUS) or 100),
-                        "type": "HOME" if state.entity_id == "zone.home" else "CUSTOM",
-                    }
+            try:
+                await run_action(
+                    coordinator.client.create_place(
+                        {
+                            "name": name[:60],
+                            "lat": lat,
+                            "lng": lng,
+                            "radiusMeters": float(state.attributes.get(ATTR_RADIUS) or 100),
+                            "type": "HOME" if state.entity_id == "zone.home" else "CUSTOM",
+                        }
+                    )
                 )
-            )
+            except HomeAssistantError as err:
+                # One zone the Nest refuses (limit reached, a second Home…) must not hide
+                # the ones already created, nor stop the rest.
+                first_error = first_error or err
+                failed.append({"name": name, "error": str(err)})
+                continue
             existing.add(name.casefold())
             created.append(name)
         if created:
             await coordinator.async_request_refresh()
-        return {"created": created} if call.return_response else None
+        # Without a response to read, the error is the only way to know something failed.
+        if first_error is not None and not call.return_response:
+            raise first_error
+        return {"created": created, "failed": failed} if call.return_response else None
 
     async def get_trips(call: ServiceCall) -> ServiceResponse:
         coordinator, user_id = _member_for_device(hass, call)
@@ -179,8 +191,11 @@ def async_setup_services(hass: HomeAssistant) -> None:
     async def get_day_timeline(call: ServiceCall) -> ServiceResponse:
         coordinator, user_id = _member_for_device(hass, call)
         day = call.data.get(ATTR_DATE) or dt_util.now().date()
-        start = dt_util.as_utc(datetime.combine(day, datetime.min.time(), dt_util.get_default_time_zone()))
-        end = start + timedelta(days=1)
+        tz = dt_util.get_default_time_zone()
+        # Midnight to midnight in local time: on a daylight-saving day that is 23 or 25
+        # hours, not start + 24 h.
+        start = dt_util.as_utc(datetime.combine(day, datetime.min.time(), tz))
+        end = dt_util.as_utc(datetime.combine(day + timedelta(days=1), datetime.min.time(), tz))
         return await run_action(
             coordinator.client.day_timeline(
                 user_id, start.strftime("%Y-%m-%dT%H:%M:%SZ"), end.strftime("%Y-%m-%dT%H:%M:%SZ")

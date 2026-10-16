@@ -17,9 +17,9 @@
     },
     "abort": {
       "cannot_connect": "Impossible de joindre Plumio. Réessayez dans un instant.",
-      "already_configured": "Ce Nid est déjà associé.",
+      "already_configured": "Ce Nid est déjà associé. La liaison que vous venez d'approuver n'est pas utilisée : déconnectez-la dans l'app Plumio (Nid → Intégrations).",
       "reauth_successful": "Associé de nouveau.",
-      "wrong_nest": "Un autre Nid a été approuvé. Approuvez le même Nid qu'auparavant."
+      "wrong_nest": "Un autre Nid a été approuvé. Déconnectez cette liaison dans l'app Plumio (Nid → Intégrations), puis approuvez le même Nid qu'auparavant."
     }
   },
   "options": {

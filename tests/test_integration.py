@@ -363,7 +363,7 @@ async def test_the_route_card_file_is_a_real_script() -> None:
 
 
 async def test_revoked_link_starts_reauth(hass: HomeAssistant, entry: MockConfigEntry, client: AsyncMock) -> None:
-    client.snapshot.side_effect = PlumioAuthError("revoked")
+    client.snapshot.side_effect = PlumioAuthError("revoked", "integration_token_invalid")
     entry.add_to_hass(hass)
     with patch("custom_components.plumio.config_flow.PlumioClient", autospec=True) as cls:
         cls.return_value.pair_start = AsyncMock(
@@ -377,6 +377,19 @@ async def test_revoked_link_starts_reauth(hass: HomeAssistant, entry: MockConfig
     flows = hass.config_entries.flow.async_progress()
     assert [flow["context"]["source"] for flow in flows] == ["reauth"]
     assert flows[0]["step_id"] == "link"
+
+
+async def test_ambiguous_401_does_not_ask_for_a_new_link(
+    hass: HomeAssistant, entry: MockConfigEntry, client: AsyncMock
+) -> None:
+    """A 401 without the server's reason (an infrastructure hiccup) is retried, not re-linked."""
+    client.snapshot.side_effect = PlumioAuthError("hiccup")
+    entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert entry.state is ConfigEntryState.SETUP_RETRY
+    assert hass.config_entries.flow.async_progress() == []
 
 
 async def test_unload(hass: HomeAssistant, entry: MockConfigEntry, client: AsyncMock) -> None:

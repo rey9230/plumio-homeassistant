@@ -17,9 +17,9 @@
     },
     "abort": {
       "cannot_connect": "No se pudo conectar con Plumio. Inténtalo de nuevo en un momento.",
-      "already_configured": "Este Nido ya está enlazado.",
+      "already_configured": "Este Nido ya está enlazado. El enlace que acabas de aprobar no se usa: desconéctalo en la app de Plumio (Nido → Integraciones).",
       "reauth_successful": "Enlazado de nuevo.",
-      "wrong_nest": "Se aprobó un Nido distinto. Aprueba el mismo Nido que estaba enlazado."
+      "wrong_nest": "Se aprobó un Nido distinto. Desconecta ese enlace en la app de Plumio (Nido → Integraciones) y aprueba el mismo Nido que estaba enlazado."
     }
   },
   "options": {

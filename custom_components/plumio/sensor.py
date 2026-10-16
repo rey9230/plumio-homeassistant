@@ -43,11 +43,24 @@ class MemberSensorDescription(SensorEntityDescription):
     premium: bool = False
 
 
+# Android (Activity Recognition) already speaks our words; iOS (CoreMotion) does not.
+_ACTIVITY_ALIASES = {
+    "stationary": "still",
+    "on_foot": "walking",
+    "cycling": "on_bicycle",
+    "automotive": "in_vehicle",
+    "driving": "in_vehicle",
+    "in_car": "in_vehicle",
+    "tilting": "still",
+}
+
+
 def _activity(member: dict[str, Any]) -> str | None:
     raw = member.get("userActivity")
     if not raw:
         return None
-    value = str(raw).lower()
+    value = str(raw).strip().lower()
+    value = _ACTIVITY_ALIASES.get(value, value)
     return value if value in ACTIVITIES else "unknown"
 
 

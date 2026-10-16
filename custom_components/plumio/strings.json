@@ -17,9 +17,9 @@
     },
     "abort": {
       "cannot_connect": "Could not reach Plumio. Try again in a moment.",
-      "already_configured": "This Nest is already linked.",
+      "already_configured": "This Nest is already linked. The link you just approved is not used: disconnect it in the Plumio app (Nest → Integrations).",
       "reauth_successful": "Linked again.",
-      "wrong_nest": "A different Nest was approved. Approve the same Nest that was linked before."
+      "wrong_nest": "A different Nest was approved. Disconnect that link in the Plumio app (Nest → Integrations), then approve the same Nest that was linked before."
     }
   },
   "options": {

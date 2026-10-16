@@ -17,9 +17,9 @@
     },
     "abort": {
       "cannot_connect": "Não foi possível conectar ao Plumio. Tente de novo em instantes.",
-      "already_configured": "Este Ninho já está vinculado.",
+      "already_configured": "Este Ninho já está vinculado. O vínculo que você acabou de aprovar não é usado: desconecte-o no app do Plumio (Ninho → Integrações).",
       "reauth_successful": "Vinculado de novo.",
-      "wrong_nest": "Outro Ninho foi aprovado. Aprove o mesmo Ninho de antes."
+      "wrong_nest": "Outro Ninho foi aprovado. Desconecte esse vínculo no app do Plumio (Ninho → Integrações) e aprove o mesmo Ninho de antes."
     }
   },
   "options": {

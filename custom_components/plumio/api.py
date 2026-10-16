@@ -26,8 +26,26 @@ class PlumioConnectionError(PlumioError):
     """The server could not be reached, or answered with a 5xx."""
 
 
+# What the server answers when the link token itself is dead (revoked, unknown, or its
+# admin left the Nest). Any other 401 may be a hiccup and must not ask for a new link.
+TOKEN_INVALID_CODE = "integration_token_invalid"
+
+
 class PlumioAuthError(PlumioError):
-    """The link token is no longer valid (revoked, or its admin left the Nest)."""
+    """A 401. `definitive` is True only when the server says the link token is dead.
+
+    A 401 without that code (an old server, a proxy, an infrastructure hiccup that
+    leaked through as anonymous) is ambiguous: callers retry and only give up after
+    several in a row.
+    """
+
+    def __init__(self, message: str, code: str | None = None) -> None:
+        super().__init__(message)
+        self.code = code
+
+    @property
+    def definitive(self) -> bool:
+        return self.code == TOKEN_INVALID_CODE
 
 
 class PlumioRequestError(PlumioError):
@@ -169,8 +187,6 @@ class PlumioClient:
     async def _raise_for_status(resp: aiohttp.ClientResponse) -> None:
         if resp.status < 400:
             return
-        if resp.status == 401:
-            raise PlumioAuthError("Link token rejected")
         if resp.status >= 500:
             raise PlumioConnectionError(f"Server error {resp.status}")
         code, detail = "error", ""
@@ -178,8 +194,10 @@ class PlumioClient:
             body = json.loads(await resp.text())
             code = str(body.get("code") or code)
             detail = str(body.get("detail") or "")
-        except (ValueError, AttributeError):
+        except (ValueError, AttributeError, aiohttp.ClientError):
             pass
+        if resp.status == 401:
+            raise PlumioAuthError("Link token rejected", None if code == "error" else code)
         retry_after: float | None = None
         if (raw := resp.headers.get("Retry-After")) is not None:
             try:

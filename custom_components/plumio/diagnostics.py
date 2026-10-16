@@ -22,6 +22,10 @@ TO_REDACT = {
     "note",
     "originName",
     "destName",
+    # A trip's route. The state no longer keeps them, but redact them anyway in case
+    # they ever come back through a payload.
+    "previewPolyline",
+    "boundingBox",
 }
 
 
