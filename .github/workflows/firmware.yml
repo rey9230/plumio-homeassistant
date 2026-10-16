@@ -1,0 +1,85 @@
+name: Firmware
+
+# Builds the Plumio Hogar ESP32 firmware and publishes the browser installer
+# (esphome/install) with it to GitHub Pages.
+
+on:
+  push:
+    branches: [main]
+    paths: ["esphome/**", ".github/workflows/firmware.yml"]
+  pull_request:
+    paths: ["esphome/**", ".github/workflows/firmware.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ESPHOME_VERSION: "2026.9.1"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - file: plumio-hogar.yaml
+            chip: ESP32
+          - file: plumio-hogar-s3.yaml
+            chip: ESP32-S3
+          - file: plumio-hogar-presencia.yaml
+            chip: ESP32
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: platformio-${{ env.ESPHOME_VERSION }}-${{ matrix.chip }}
+      - run: pip install "esphome==${ESPHOME_VERSION}"
+      - name: Compile
+        working-directory: esphome
+        run: esphome compile "${{ matrix.file }}"
+      - name: Collect the image and its manifest
+        env:
+          FILE: ${{ matrix.file }}
+          CHIP: ${{ matrix.chip }}
+        run: |
+          name="$(basename "$FILE" .yaml)"
+          bin="$(find esphome/.esphome/build -name firmware.factory.bin | head -n1)"
+          test -n "$bin"
+          mkdir -p out
+          cp "$bin" "out/${name}.factory.bin"
+          version="$(sed -n 's/^ *version: "\(.*\)"/\1/p' esphome/packages/plumio-hogar-base.yaml | head -n1)"
+          python3 .github/scripts/firmware_manifest.py "$name" "$CHIP" "$version" > "out/${name}.manifest.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: firmware-${{ strategy.job-index }}
+          path: out/
+
+  pages:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: firmware-*
+          merge-multiple: true
+          path: site
+      - run: cp esphome/install/index.html site/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4

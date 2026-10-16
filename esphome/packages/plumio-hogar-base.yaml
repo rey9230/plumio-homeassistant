@@ -1,0 +1,67 @@
+# Plumio Hogar: everything a room needs, whatever the board.
+#
+# A Bluetooth proxy: it listens for the Plumio tags (and any other Bluetooth device) in
+# its room and passes what it hears to Home Assistant, where Bermuda works out which room
+# each tag is in. One per room; the closer to the middle of the room, the better.
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  # Several in a house: each gets its own name from its MAC address.
+  name_add_mac_suffix: true
+  min_version: 2025.5.0
+  project:
+    name: plumio.hogar
+    version: "1.0.0"
+
+logger:
+  level: WARN
+
+# Home Assistant finds it on its own (Settings → Devices & services → Discovered).
+api:
+
+ota:
+  - platform: esphome
+
+wifi:
+  # Without Wi-Fi it opens its own hotspot, "Plumio Hogar", to set it up from a phone.
+  ap:
+    ssid: "Plumio Hogar"
+
+captive_portal:
+
+# Wi-Fi from the browser installer, over the USB cable.
+improv_serial:
+
+# Lets the ESPHome dashboard take it over and keep it up to date.
+dashboard_import:
+  package_import_url: ${import_url}
+  import_full_config: false
+
+esp32_ble_tracker:
+  scan_parameters:
+    # Listening ~94% of the time: a tag announces itself every 400 ms, so it is never
+    # missed, while Wi-Fi (same radio) still gets the gaps it needs.
+    interval: 320ms
+    window: 300ms
+    active: true
+
+bluetooth_proxy:
+  active: true
+
+sensor:
+  - platform: wifi_signal
+    name: Wi-Fi signal
+    update_interval: 60s
+    entity_category: diagnostic
+  - platform: uptime
+    name: Uptime
+    entity_category: diagnostic
+
+button:
+  - platform: restart
+    name: Restart
+    entity_category: config
+  - platform: safe_mode
+    name: Restart in safe mode
+    entity_category: config

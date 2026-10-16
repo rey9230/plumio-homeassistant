@@ -1,0 +1,16 @@
+# Plumio Hogar + presence radar: a classic ESP32 with an HLK-LD2410 wired to GPIO16/17.
+substitutions:
+  name: plumio-hogar-presencia
+  friendly_name: Plumio Hogar
+  import_url: github://rey9230/plumio-homeassistant/esphome/plumio-hogar-presencia.yaml@main
+  ld2410_tx_pin: GPIO17
+  ld2410_rx_pin: GPIO16
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+packages:
+  base: !include packages/plumio-hogar-base.yaml
+  presence: !include packages/presence-ld2410.yaml

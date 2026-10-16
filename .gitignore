@@ -4,3 +4,7 @@ __pycache__/
 .ruff_cache/
 .venv/
 config/
+
+# ESPHome builds and local secrets
+esphome/.esphome/
+esphome/secrets.yaml

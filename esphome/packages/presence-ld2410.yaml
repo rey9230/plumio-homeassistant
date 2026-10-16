@@ -1,0 +1,30 @@
+# Optional: an HLK-LD2410 mmWave radar on the same board.
+#
+# Unlike a motion sensor it sees someone sitting still or asleep, so "someone is in the
+# room" stays on while they read. Wire: radar TX → ${ld2410_rx_pin}, radar RX →
+# ${ld2410_tx_pin}, 5V and GND. Mount it facing the room, at chest height or on the ceiling.
+
+uart:
+  id: ld2410_uart
+  tx_pin: ${ld2410_tx_pin}
+  rx_pin: ${ld2410_rx_pin}
+  baud_rate: 256000
+  parity: NONE
+  stop_bits: 1
+
+ld2410:
+  uart_id: ld2410_uart
+
+binary_sensor:
+  - platform: ld2410
+    has_target:
+      name: Presence
+    has_moving_target:
+      name: Moving
+    has_still_target:
+      name: Still
+
+sensor:
+  - platform: ld2410
+    detection_distance:
+      name: Detection distance

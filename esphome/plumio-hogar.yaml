@@ -1,0 +1,14 @@
+# Plumio Hogar for a classic ESP32 (ESP32-WROOM / "ESP32 DevKit", the cheapest one).
+substitutions:
+  name: plumio-hogar
+  friendly_name: Plumio Hogar
+  import_url: github://rey9230/plumio-homeassistant/esphome/plumio-hogar.yaml@main
+
+esp32:
+  board: esp32dev
+  framework:
+    # ESP-IDF leaves more memory for Bluetooth than Arduino does.
+    type: esp-idf
+
+packages:
+  base: !include packages/plumio-hogar-base.yaml

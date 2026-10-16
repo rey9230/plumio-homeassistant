@@ -1,0 +1,13 @@
+# Plumio Hogar for an ESP32-S3 (more memory: the one to pick for a big room or many devices).
+substitutions:
+  name: plumio-hogar-s3
+  friendly_name: Plumio Hogar
+  import_url: github://rey9230/plumio-homeassistant/esphome/plumio-hogar-s3.yaml@main
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+
+packages:
+  base: !include packages/plumio-hogar-base.yaml
