@@ -24,9 +24,32 @@ Only an admin of the Nest can link it. Everyone in the Nest is told when it is l
 | Each member (Premium) | Position on the map · speed · activity · driving · distance from home · approximate area · security alert · last trip distance, top speed, end time and driving events · *Request location* and *Ring phone* buttons |
 | The Nest | Members home · anyone home · everyone home · plan · live connection · *Refresh everyone* button |
 | Each place | Members here (with names) · occupied |
-| Each tag (Premium) | Device tracker of where it was last heard · battery voltage · last seen |
+| Each tag (Premium) | Device tracker of where it was last heard · battery voltage · last seen · **room** (see below) |
 
 A Plumio place of type *Home* counts as `home` without configuring a zone (can be turned off in the options).
+
+### Which room each tag is in
+
+A phone can only say a tag is *at home*. Home Assistant can say *in the kitchen*: put a
+Bluetooth proxy in each room and let [Bermuda](https://github.com/agittins/bermuda) work
+out which one hears the tag best.
+
+1. **One ESP32 per room** running ESPHome's Bluetooth proxy (see
+   [`esphome/`](esphome/README.md) for a ready-made firmware you install from the browser).
+   Assign each proxy to its area in Home Assistant.
+2. **Install Bermuda** from HACS.
+3. That's it. Plumio adds your tags to Bermuda's list of devices to track (switch it
+   off in the options if you'd rather do it yourself), finds the Area sensor Bermuda
+   creates for each one, and fills the tag's **Room** sensor.
+
+The room also reaches the Plumio app, so the family sees *Keys · Kitchen, 2 min ago*
+on their phones. Home Assistant repeats it every 5 minutes while the tag is still
+there; if it stops (Home Assistant offline, tag out of range), the app forgets the
+room after 20 minutes and goes back to the last place a phone heard it.
+
+Using something other than Bermuda (ESPresense, room-assistant, a template)? Any sensor
+whose state is a room name works: pick it per tag in **Settings → Devices & services →
+Plumio → Configure**.
 
 ### Day route card
 

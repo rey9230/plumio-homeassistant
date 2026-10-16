@@ -20,6 +20,11 @@ CONF_MAX_GPS_ACCURACY = "max_gps_accuracy"
 CONF_HOME_FROM_PLACES = "home_from_places"
 DEFAULT_MAX_GPS_ACCURACY = 200
 DEFAULT_HOME_FROM_PLACES = True
+# Rooms: which sensor says where each tag is (tag id -> entity id), and whether to
+# ask Bermuda to track the Nest's tags.
+CONF_ROOM_SOURCES = "room_sources"
+CONF_BERMUDA_AUTO_ADD = "bermuda_auto_add"
+DEFAULT_BERMUDA_AUTO_ADD = True
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
@@ -37,6 +42,13 @@ POLL_INTERVAL_STREAM_DOWN = timedelta(seconds=60)
 STREAM_READ_TIMEOUT = 90
 STREAM_BACKOFF_MIN = 1.0
 STREAM_BACKOFF_MAX = 120.0
+
+# The iBeacon UUID every Plumio tag sends (major = model, minor = unit number).
+PLUMIO_IBEACON_UUID = "a923b4a3931044499732a63c687d4576"
+BERMUDA_DOMAIN = "bermuda"
+BERMUDA_CONFIGURED_DEVICES = "configured_devices"
+# Plumio forgets a tag's room after 20 minutes without hearing it again.
+ROOM_REFRESH_INTERVAL = timedelta(minutes=5)
 
 # A member is "not reporting" after this long without a fix (matches the server).
 STALE_AFTER = timedelta(minutes=30)

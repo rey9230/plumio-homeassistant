@@ -28,11 +28,17 @@
         "title": "Plumio 選項",
         "data": {
           "home_from_places": "將 Plumio 中類型為「家」的地點視為在家",
-          "max_gps_accuracy": "忽略精確度低於此值的定位"
+          "max_gps_accuracy": "忽略精確度低於此值的定位",
+          "bermuda_auto_add": "自動將我的追蹤器加入 Bermuda"
         },
         "data_description": {
-          "max_gps_accuracy": "0 表示全部接受。"
+          "max_gps_accuracy": "0 表示全部接受。",
+          "bermuda_auto_add": "透過藍牙代理與 Bermuda 整合，每個追蹤器都能知道自己在哪個房間。這會把巢的追蹤器加入 Bermuda 的追蹤清單；不會移除任何東西。"
         }
+      },
+      "rooms": {
+        "title": "每個追蹤器的房間",
+        "description": "留空即使用 Bermuda 的區域感測器（會自動找到）。或選擇任何狀態為房間名稱的感測器（ESPresense、room-assistant、範本）。"
       }
     }
   },
@@ -104,6 +110,9 @@
       },
       "tag_battery": {
         "name": "電池電壓"
+      },
+      "tag_room": {
+        "name": "房間"
       },
       "tag_last_seen": {
         "name": "上次偵測時間"

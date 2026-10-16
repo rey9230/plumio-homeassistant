@@ -28,11 +28,17 @@
         "title": "Options Plumio",
         "data": {
           "home_from_places": "Considérer les lieux Plumio de type Maison comme domicile",
-          "max_gps_accuracy": "Ignorer les positions moins précises que"
+          "max_gps_accuracy": "Ignorer les positions moins précises que",
+          "bermuda_auto_add": "Ajouter mes tags à Bermuda automatiquement"
         },
         "data_description": {
-          "max_gps_accuracy": "0 accepte tout."
+          "max_gps_accuracy": "0 accepte tout.",
+          "bermuda_auto_add": "Avec des proxys Bluetooth et l'intégration Bermuda, chaque tag connaît la pièce où il se trouve. Ceci ajoute les tags du Nid à la liste d'appareils suivis par Bermuda ; rien n'est jamais retiré."
         }
+      },
+      "rooms": {
+        "title": "Pièce de chaque tag",
+        "description": "Laissez un tag vide pour utiliser le capteur Zone de Bermuda, trouvé automatiquement. Ou choisissez n'importe quel capteur dont l'état est le nom d'une pièce (ESPresense, room-assistant, un modèle)."
       }
     }
   },
@@ -104,6 +110,9 @@
       },
       "tag_battery": {
         "name": "Tension de la pile"
+      },
+      "tag_room": {
+        "name": "Pièce"
       },
       "tag_last_seen": {
         "name": "Vu pour la dernière fois"

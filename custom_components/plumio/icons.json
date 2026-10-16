@@ -33,7 +33,8 @@
       },
       "occupancy": { "default": "mdi:account-group" },
       "tag_battery": { "default": "mdi:battery-heart-variant" },
-      "tag_last_seen": { "default": "mdi:eye-check" }
+      "tag_last_seen": { "default": "mdi:eye-check" },
+      "tag_room": { "default": "mdi:floor-plan" }
     },
     "binary_sensor": {
       "driving": { "default": "mdi:car-off", "state": { "on": "mdi:car" } },

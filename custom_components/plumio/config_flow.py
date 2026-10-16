@@ -18,6 +18,8 @@ from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import (
     BooleanSelector,
+    EntitySelector,
+    EntitySelectorConfig,
     NumberSelector,
     NumberSelectorConfig,
     NumberSelectorMode,
@@ -29,12 +31,15 @@ from homeassistant.helpers.selector import (
 from .api import PlumioClient, PlumioError
 from .const import (
     CONF_API_URL,
+    CONF_BERMUDA_AUTO_ADD,
     CONF_HOME_FROM_PLACES,
     CONF_LINK_ID,
     CONF_MAX_GPS_ACCURACY,
     CONF_NEST_ID,
+    CONF_ROOM_SOURCES,
     CONF_TOKEN,
     DEFAULT_API_URL,
+    DEFAULT_BERMUDA_AUTO_ADD,
     DEFAULT_HOME_FROM_PLACES,
     DEFAULT_MAX_GPS_ACCURACY,
     DOMAIN,
@@ -138,10 +143,16 @@ class PlumioConfigFlow(ConfigFlow, domain=DOMAIN):
 class PlumioOptionsFlow(OptionsFlow):
     """Behaviour that is a matter of taste, not of linking."""
 
+    def __init__(self) -> None:
+        self._options: dict[str, Any] = {}
+
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        if user_input is not None:
-            return self.async_create_entry(data=user_input)
         options = self.config_entry.options
+        if user_input is not None:
+            self._options = {**options, **user_input}
+            if self._tags():
+                return await self.async_step_rooms()
+            return self.async_create_entry(data=self._options)
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
@@ -158,6 +169,45 @@ class PlumioOptionsFlow(OptionsFlow):
                             min=0, max=5000, step=10, unit_of_measurement="m", mode=NumberSelectorMode.BOX
                         )
                     ),
+                    vol.Required(
+                        CONF_BERMUDA_AUTO_ADD,
+                        default=options.get(CONF_BERMUDA_AUTO_ADD, DEFAULT_BERMUDA_AUTO_ADD),
+                    ): BooleanSelector(),
                 }
             ),
         )
+
+    async def async_step_rooms(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        """Optionally, the sensor that says which room each tag is in.
+
+        Empty means "use Bermuda's", found on its own. Anything else that names a room
+        works too (ESPresense, room-assistant, a template).
+        """
+        fields = self._room_fields()
+        if user_input is not None:
+            sources = {tag_id: user_input[label] for label, tag_id in fields.items() if user_input.get(label)}
+            return self.async_create_entry(data={**self._options, CONF_ROOM_SOURCES: sources})
+        current: dict[str, str] = self._options.get(CONF_ROOM_SOURCES) or {}
+        schema = {
+            vol.Optional(label, description={"suggested_value": current.get(tag_id)}): EntitySelector(
+                EntitySelectorConfig(domain="sensor")
+            )
+            for label, tag_id in fields.items()
+        }
+        return self.async_show_form(step_id="rooms", data_schema=vol.Schema(schema))
+
+    def _tags(self) -> dict[str, dict[str, Any]]:
+        coordinator = getattr(self.config_entry, "runtime_data", None)
+        return coordinator.data.tags if coordinator is not None and coordinator.data else {}
+
+    def _room_fields(self) -> dict[str, str]:
+        """Form label (the tag's name, made unique) -> tag id."""
+        fields: dict[str, str] = {}
+        for tag_id, tag in sorted(self._tags().items(), key=lambda kv: kv[1].get("name") or ""):
+            label = base = tag.get("name") or tag_id
+            n = 2
+            while label in fields:
+                label = f"{base} ({n})"
+                n += 1
+            fields[label] = tag_id
+        return fields

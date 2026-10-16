@@ -126,6 +126,10 @@ class PlumioClient:
     async def delete_place(self, place_id: str) -> None:
         await self._request("DELETE", f"/integration/v1/places/{place_id}")
 
+    async def set_tag_room(self, tag_id: str, room: str | None) -> None:
+        """Tell Plumio which room of the house a tag is in (None: not heard at home)."""
+        await self._request("PUT", f"/integration/v1/tags/{tag_id}/room", json_body={"room": room})
+
     # ---------- stream ----------
 
     async def events(self, last_event_id: str | None, read_timeout: float) -> AsyncIterator[SseEvent]:

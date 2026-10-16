@@ -184,7 +184,11 @@ async def async_setup_entry(
         async_add_entities,
         members=member_sensors,
         places=lambda place_id: [PlaceOccupancySensor(coordinator, place_id)],
-        tags=lambda tag_id: [TagBatterySensor(coordinator, tag_id), TagLastSeenSensor(coordinator, tag_id)],
+        tags=lambda tag_id: [
+            TagBatterySensor(coordinator, tag_id),
+            TagLastSeenSensor(coordinator, tag_id),
+            TagRoomSensor(coordinator, tag_id),
+        ],
     )
 
 
@@ -344,3 +348,29 @@ class TagLastSeenSensor(TagEntity, SensorEntity):
     @property
     def native_value(self) -> datetime | None:
         return parse_ts(self.tag.get("lastSeenAt"))
+
+
+class TagRoomSensor(TagEntity, SensorEntity):
+    """The room of the house the tag is in, from Home Assistant's Bluetooth proxies.
+
+    Without a room sensor for it (Bermuda, or one picked in the options) it shows what
+    Plumio last heard, and is unknown when nobody knows.
+    """
+
+    def __init__(self, coordinator: PlumioCoordinator, tag_id: str) -> None:
+        super().__init__(coordinator, tag_id, "tag_room")
+
+    async def async_added_to_hass(self) -> None:
+        await super().async_added_to_hass()
+        if self.coordinator.rooms is not None:
+            self.async_on_remove(self.coordinator.rooms.async_add_listener(self.async_write_ha_state))
+
+    @property
+    def native_value(self) -> str | None:
+        rooms = self.coordinator.rooms
+        return rooms.room(self.tag_id) if rooms is not None else self.tag.get("room")
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        rooms = self.coordinator.rooms
+        return {"source": rooms.source(self.tag_id) if rooms is not None else None}

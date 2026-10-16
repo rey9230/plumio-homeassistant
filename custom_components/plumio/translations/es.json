@@ -28,11 +28,17 @@
         "title": "Opciones de Plumio",
         "data": {
           "home_from_places": "Tratar los lugares de tipo Casa de Plumio como casa",
-          "max_gps_accuracy": "Ignorar ubicaciones menos precisas que"
+          "max_gps_accuracy": "Ignorar ubicaciones menos precisas que",
+          "bermuda_auto_add": "Añadir mis tags a Bermuda automáticamente"
         },
         "data_description": {
-          "max_gps_accuracy": "0 lo acepta todo."
+          "max_gps_accuracy": "0 lo acepta todo.",
+          "bermuda_auto_add": "Con proxies Bluetooth y la integración Bermuda, cada tag sabe en qué habitación está. Esto añade los tags del Nido a la lista de dispositivos que sigue Bermuda; nunca quita nada."
         }
+      },
+      "rooms": {
+        "title": "Habitación de cada tag",
+        "description": "Deja un tag vacío para usar el sensor Área de Bermuda, que se encuentra solo. O elige cualquier sensor cuyo estado sea el nombre de una habitación (ESPresense, room-assistant, una plantilla)."
       }
     }
   },
@@ -104,6 +110,9 @@
       },
       "tag_battery": {
         "name": "Voltaje de la pila"
+      },
+      "tag_room": {
+        "name": "Habitación"
       },
       "tag_last_seen": {
         "name": "Última vez visto"

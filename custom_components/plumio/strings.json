@@ -28,11 +28,17 @@
         "title": "Plumio options",
         "data": {
           "home_from_places": "Treat Plumio places of type Home as home",
-          "max_gps_accuracy": "Ignore fixes less precise than"
+          "max_gps_accuracy": "Ignore fixes less precise than",
+          "bermuda_auto_add": "Add my tags to Bermuda automatically"
         },
         "data_description": {
-          "max_gps_accuracy": "0 accepts everything."
+          "max_gps_accuracy": "0 accepts everything.",
+          "bermuda_auto_add": "With Bluetooth proxies and the Bermuda integration, each tag gets the room it is in. This adds the Nest's tags to Bermuda's list of devices to track; it never removes anything."
         }
+      },
+      "rooms": {
+        "title": "Room of each tag",
+        "description": "Leave a tag empty to use Bermuda's Area sensor, found on its own. Or pick any sensor whose state is the name of a room (ESPresense, room-assistant, a template)."
       }
     }
   },
@@ -104,6 +110,9 @@
       },
       "tag_battery": {
         "name": "Battery voltage"
+      },
+      "tag_room": {
+        "name": "Room"
       },
       "tag_last_seen": {
         "name": "Last seen"

@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 import logging
 import random
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant, callback
@@ -42,6 +42,9 @@ from .const import (
     STREAM_BACKOFF_MIN,
     STREAM_READ_TIMEOUT,
 )
+
+if TYPE_CHECKING:
+    from .rooms import TagRooms
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -216,6 +219,8 @@ class PlumioCoordinator(DataUpdateCoordinator[PlumioData]):
         self._event_listeners: list[EventListener] = []
         self._auth_strikes = 0
         self._trip_retry_at: dict[str, datetime] = {}
+        # Set up once the first snapshot is in (see async_setup_entry).
+        self.rooms: TagRooms | None = None
 
     # ---------- snapshot ----------
 

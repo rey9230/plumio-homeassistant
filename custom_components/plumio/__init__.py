@@ -14,6 +14,7 @@ from homeassistant.loader import async_get_integration
 from .api import PlumioClient
 from .const import CONF_API_URL, CONF_TOKEN, DEFAULT_API_URL, DOMAIN, PLATFORMS
 from .coordinator import PlumioConfigEntry, PlumioCoordinator
+from .rooms import TagRooms
 from .services import async_setup_services
 
 # Where the dashboard card is served from.
@@ -71,8 +72,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: PlumioConfigEntry) -> bo
         entry_type=dr.DeviceEntryType.SERVICE,
     )
     coordinator.nest_device_id = nest_device.id
+    coordinator.rooms = TagRooms(hass, coordinator)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    coordinator.rooms.async_start()
     coordinator.start_stream()
     entry.async_on_unload(entry.add_update_listener(_async_options_updated))
     return True

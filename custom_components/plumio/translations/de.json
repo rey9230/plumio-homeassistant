@@ -28,11 +28,17 @@
         "title": "Plumio-Optionen",
         "data": {
           "home_from_places": "Plumio-Orte vom Typ Zuhause als Zuhause werten",
-          "max_gps_accuracy": "Standorte ignorieren, die ungenauer sind als"
+          "max_gps_accuracy": "Standorte ignorieren, die ungenauer sind als",
+          "bermuda_auto_add": "Meine Tags automatisch zu Bermuda hinzufügen"
         },
         "data_description": {
-          "max_gps_accuracy": "0 akzeptiert alles."
+          "max_gps_accuracy": "0 akzeptiert alles.",
+          "bermuda_auto_add": "Mit Bluetooth-Proxys und der Bermuda-Integration bekommt jeder Tag den Raum, in dem er liegt. Das fügt die Tags des Nests zu Bermudas Geräteliste hinzu; entfernt wird nie etwas."
         }
+      },
+      "rooms": {
+        "title": "Raum jedes Tags",
+        "description": "Lass einen Tag leer, um Bermudas Bereichssensor zu verwenden, der automatisch gefunden wird. Oder wähle einen beliebigen Sensor, dessen Zustand der Name eines Raums ist (ESPresense, room-assistant, eine Vorlage)."
       }
     }
   },
@@ -104,6 +110,9 @@
       },
       "tag_battery": {
         "name": "Batteriespannung"
+      },
+      "tag_room": {
+        "name": "Raum"
       },
       "tag_last_seen": {
         "name": "Zuletzt gesehen"
