@@ -1,0 +1,142 @@
+blueprint:
+  name: "Plumio: don't forget it (scheduled reminder)"
+  description: >
+    At a set time on the days you choose, if a tag is still at home (the school
+    backpack at 7:30, the gym bag at 18:00), remind the family, on their phones
+    and out loud.
+
+
+    With the tag's **Room** sensor (Bluetooth proxies + Bermuda, see the README)
+    the reminder can say which room it is in, or only fire when it is still in a
+    particular room.
+  domain: automation
+  source_url: https://github.com/rey9230/plumio-homeassistant/blob/main/blueprints/automation/plumio/tag_reminder.yaml
+  author: Plumio
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    tag:
+      name: Tag
+      description: The tag's tracker.
+      selector:
+        entity:
+          filter:
+            - integration: plumio
+              domain: device_tracker
+    at:
+      name: Time
+      default: "07:30:00"
+      selector:
+        time:
+    weekdays:
+      name: Days
+      default: [mon, tue, wed, thu, fri]
+      selector:
+        select:
+          multiple: true
+          options:
+            - label: Monday
+              value: mon
+            - label: Tuesday
+              value: tue
+            - label: Wednesday
+              value: wed
+            - label: Thursday
+              value: thu
+            - label: Friday
+              value: fri
+            - label: Saturday
+              value: sat
+            - label: Sunday
+              value: sun
+    room_sensor:
+      name: Room sensor (optional)
+      description: The tag's "Room" sensor.
+      default: ""
+      selector:
+        entity:
+          filter:
+            - integration: plumio
+              domain: sensor
+    only_in_room:
+      name: Only if it is in this room (optional)
+      description: E.g. "Bedroom". Leave empty to remind wherever it is at home.
+      default: ""
+      selector:
+        text:
+    message:
+      name: Message
+      default: "Don't forget {{ tag_name }}{{ ' (it is in the ' ~ room ~ ')' if room else '' }}."
+      selector:
+        text:
+    notify_service:
+      name: Notification action
+      description: >
+        A notify action such as `notify.mobile_app_pixel_8`, or a group like
+        `notify.family`. Leave empty to only announce it.
+      default: ""
+      selector:
+        text:
+    speakers:
+      name: Speakers (optional)
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - domain: media_player
+    tts:
+      name: Text-to-speech engine
+      default: ""
+      selector:
+        entity:
+          filter:
+            - domain: tts
+
+mode: single
+
+triggers:
+  - trigger: time
+    at: !input at
+
+variables:
+  tag: !input tag
+  room_sensor: !input room_sensor
+  only_in_room: !input only_in_room
+  notify_service: !input notify_service
+  speakers: !input speakers
+  tts: !input tts
+  tag_name: "{{ device_attr(tag, 'name') }}"
+  room: >
+    {% set r = states(room_sensor) if room_sensor else '' %}
+    {{ r if r not in ['', 'unknown', 'unavailable', 'not_home'] else '' }}
+  message: !input message
+
+conditions:
+  - condition: time
+    weekday: !input weekdays
+  - condition: template
+    value_template: "{{ is_state(tag, 'home') }}"
+  - condition: template
+    value_template: >
+      {{ only_in_room | trim == '' or (room | lower) == (only_in_room | trim | lower) }}
+
+actions:
+  - if:
+      - condition: template
+        value_template: "{{ notify_service | trim | length > 0 }}"
+    then:
+      - action: "{{ notify_service | trim }}"
+        data:
+          title: Plumio
+          message: "{{ message }}"
+  - if:
+      - condition: template
+        value_template: "{{ speakers | count > 0 and tts | length > 0 }}"
+    then:
+      - action: tts.speak
+        target:
+          entity_id: "{{ tts }}"
+        data:
+          media_player_entity_id: "{{ speakers }}"
+          message: "{{ message }}"

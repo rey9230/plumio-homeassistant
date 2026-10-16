@@ -1,0 +1,78 @@
+blueprint:
+  name: "Plumio: you left without your keys"
+  description: >
+    A member leaves home and, a few minutes later, a tag that should go with them
+    (keys, wallet, backpack) is still at home. Tell them before they get too far.
+
+
+    How it knows: the member's own phone reports the tag wherever it hears it. If
+    the tag went along, its location moves with the phone; if it stayed, its last
+    location is still home. Needs Plumio Premium (tags).
+  domain: automation
+  source_url: https://github.com/rey9230/plumio-homeassistant/blob/main/blueprints/automation/plumio/forgot_tag.yaml
+  author: Plumio
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    member:
+      name: Member
+      selector:
+        entity:
+          filter:
+            - integration: plumio
+              domain: device_tracker
+    tags:
+      name: Tags that go with them
+      description: The tags' trackers.
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: plumio
+              domain: device_tracker
+    wait:
+      name: Check after
+      description: Long enough for the phone to hear the tag on the way out.
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 30
+          unit_of_measurement: min
+    notify_service:
+      name: Notification action
+      description: >
+        Usually the member's own phone, e.g. `notify.mobile_app_camila_phone`.
+      selector:
+        text:
+    extra_actions:
+      name: Extra actions
+      default: []
+      selector:
+        action:
+
+mode: restart
+
+triggers:
+  - trigger: state
+    entity_id: !input member
+    from: home
+
+variables:
+  tags: !input tags
+  notify_service: !input notify_service
+  member_entity: !input member
+
+actions:
+  - delay:
+      minutes: !input wait
+  - variables:
+      left_behind: >
+        {{ tags | select('is_state', 'home') | map('device_attr', 'name') | list }}
+  - condition: template
+    value_template: "{{ not is_state(member_entity, 'home') and left_behind | count > 0 }}"
+  - action: "{{ notify_service | trim }}"
+    data:
+      title: Plumio
+      message: "Did you forget something? {{ left_behind | join(', ') }} stayed at home."
+  - sequence: !input extra_actions

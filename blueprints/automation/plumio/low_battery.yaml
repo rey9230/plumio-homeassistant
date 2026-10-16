@@ -1,0 +1,91 @@
+blueprint:
+  name: "Plumio: low battery (phones and tags)"
+  description: >
+    Tell me when a member's phone is running low (as Plumio reports it) and when
+    a tag's coin cell is getting weak, so it gets changed before the tag goes
+    silent.
+  domain: automation
+  source_url: https://github.com/rey9230/plumio-homeassistant/blob/main/blueprints/automation/plumio/low_battery.yaml
+  author: Plumio
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    members:
+      name: Members
+      description: The members' "Events" entities. Leave empty to skip phones.
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: plumio
+              domain: event
+    tags:
+      name: Tags
+      description: The tags' "Battery voltage" sensors. Leave empty to skip tags (needs Premium).
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: plumio
+              domain: sensor
+              device_class: voltage
+    tag_threshold:
+      name: Tag battery threshold
+      description: A CR2032 is new at about 3.0 V and nearly empty below 2.5 V.
+      default: 2.5
+      selector:
+        number:
+          min: 2.0
+          max: 3.2
+          step: 0.05
+          unit_of_measurement: V
+    notify_service:
+      name: Notification action
+      description: >
+        A notify action such as `notify.mobile_app_pixel_8`, or a group like
+        `notify.family`.
+      selector:
+        text:
+    extra_actions:
+      name: Extra actions
+      default: []
+      selector:
+        action:
+
+mode: queued
+max_exceeded: silent
+
+triggers:
+  - trigger: state
+    entity_id: !input members
+    not_to: [unavailable, unknown]
+    id: phone
+  - trigger: numeric_state
+    entity_id: !input tags
+    below: !input tag_threshold
+    id: tag
+
+variables:
+  notify_service: !input notify_service
+  name: "{{ device_attr(device_id(trigger.entity_id), 'name') }}"
+
+conditions:
+  - condition: template
+    value_template: >
+      {{ trigger.id == 'tag' or
+         ((now() - as_datetime(trigger.to_state.state)).total_seconds() < 120
+          and trigger.to_state.attributes.event_type == 'low_battery') }}
+
+actions:
+  - action: "{{ notify_service | trim }}"
+    data:
+      title: Plumio
+      message: >
+        {% if trigger.id == 'tag' %}
+          The battery of the tag "{{ name }}" is low ({{ trigger.to_state.state }} V). Time to change it.
+        {% else %}
+          {{ name }}'s phone is at {{ trigger.to_state.attributes.battery_level }}%.
+        {% endif %}
+  - sequence: !input extra_actions

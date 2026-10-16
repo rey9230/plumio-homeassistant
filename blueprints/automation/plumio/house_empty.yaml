@@ -1,0 +1,67 @@
+blueprint:
+  name: "Plumio: last one out / first one in"
+  description: >
+    Uses your Nest's **Anyone home** sensor. When the last member leaves (and the
+    house stays empty for a few minutes) run one set of actions: lights off,
+    thermostat to eco, alarm on. When the first member is back, run another.
+  domain: automation
+  source_url: https://github.com/rey9230/plumio-homeassistant/blob/main/blueprints/automation/plumio/house_empty.yaml
+  author: Plumio
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    anyone_home:
+      name: Anyone home sensor
+      description: The Nest's "Anyone home" entity.
+      selector:
+        entity:
+          filter:
+            - integration: plumio
+              domain: binary_sensor
+              device_class: occupancy
+    empty_for:
+      name: Empty for
+      description: How long the house has to stay empty before the "last one out" actions run.
+      default: 5
+      selector:
+        number:
+          min: 0
+          max: 120
+          unit_of_measurement: min
+    empty_actions:
+      name: When the last one leaves
+      default: []
+      selector:
+        action:
+    back_actions:
+      name: When the first one is back
+      default: []
+      selector:
+        action:
+
+mode: restart
+
+triggers:
+  - trigger: state
+    entity_id: !input anyone_home
+    from: "on"
+    to: "off"
+    for:
+      minutes: !input empty_for
+    id: empty
+  - trigger: state
+    entity_id: !input anyone_home
+    from: "off"
+    to: "on"
+    id: back
+
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: empty
+        sequence: !input empty_actions
+      - conditions:
+          - condition: trigger
+            id: back
+        sequence: !input back_actions

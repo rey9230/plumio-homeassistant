@@ -1,0 +1,96 @@
+blueprint:
+  name: "Plumio: someone arrives home"
+  description: >
+    Runs your actions when a member of your Plumio Nest gets home: turn on the
+    entrance lights, open the gate, disarm the alarm.
+
+
+    Optionally only for the **first** one home, only after dark, and only once a
+    presence sensor at the door confirms someone actually walked in (the phone's
+    geofence fires a little before the door opens).
+  domain: automation
+  source_url: https://github.com/rey9230/plumio-homeassistant/blob/main/blueprints/automation/plumio/arrival_home.yaml
+  author: Plumio
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    members:
+      name: Members
+      description: Plumio member trackers to watch.
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - integration: plumio
+              domain: device_tracker
+    only_first:
+      name: Only the first one home
+      description: Skip when one of the members above was already home.
+      default: false
+      selector:
+        boolean:
+    only_after_dark:
+      name: Only after dark
+      default: false
+      selector:
+        boolean:
+    door_sensor:
+      name: Confirm with a sensor at the door (optional)
+      description: >
+        A motion, presence (mmWave) or door sensor. The actions wait until it turns
+        on, so they run when the person walks in, not when their phone crosses the
+        geofence.
+      default: ""
+      selector:
+        entity:
+          filter:
+            - domain: binary_sensor
+    door_timeout:
+      name: How long to wait for the door sensor
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 60
+          unit_of_measurement: min
+    arrival_actions:
+      name: Actions
+      description: >
+        What to do. The variable `member` holds the name of who arrived.
+      selector:
+        action:
+
+mode: queued
+max_exceeded: silent
+
+triggers:
+  - trigger: state
+    entity_id: !input members
+    to: home
+
+variables:
+  members: !input members
+  only_first: !input only_first
+  only_after_dark: !input only_after_dark
+  door_sensor: !input door_sensor
+  door_timeout: !input door_timeout
+  member: "{{ device_attr(device_id(trigger.entity_id), 'name') or state_attr(trigger.entity_id, 'friendly_name') }}"
+
+conditions:
+  - condition: template
+    value_template: >
+      {{ not only_first or
+         (members | reject('eq', trigger.entity_id) | select('is_state', 'home') | list | count) == 0 }}
+  - condition: template
+    value_template: "{{ not only_after_dark or is_state('sun.sun', 'below_horizon') }}"
+
+actions:
+  - if:
+      - condition: template
+        value_template: "{{ door_sensor | length > 0 }}"
+    then:
+      - wait_template: "{{ is_state(door_sensor, 'on') }}"
+        timeout:
+          minutes: "{{ door_timeout }}"
+        continue_on_timeout: false
+  - sequence: !input arrival_actions

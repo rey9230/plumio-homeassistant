@@ -80,6 +80,26 @@ automation:
           message: "Camila is at {{ trigger.event.data.batteryLevel }}%"
 ```
 
+### Blueprints
+
+Ready-made automations: import one, pick the people, tags and lights from menus, done. Every one of them also leaves room for your own actions.
+
+| | Blueprint | What it does | Needs |
+|---|---|---|---|
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Farrival_home.yaml) | **Someone arrives home** | Entrance lights, gate, alarm. Optionally only the first one, only after dark, and only once the door sensor sees them walk in. | Free |
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Fhouse_empty.yaml) | **Last one out / first one in** | Everything off when the house has been empty for a while; your welcome scene when the first one is back. | Free |
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Fplace_alert.yaml) | **Arrives at or leaves a place** | "Camila arrived at School", for one place or all of them. | Free |
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Fsos_alarm.yaml) | **SOS at home** | Critical notification with the map, lights red, siren and a spoken announcement. Undone when the SOS is resolved. | Free |
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Fcrash_alert.yaml) | **Crash detected** | Critical notification with where it happened, and an announcement at home. | Free |
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Fnot_reporting.yaml) | **A member stopped reporting** | Their phone has been silent for 30 minutes, and when it is back. | Free |
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Flow_battery.yaml) | **Low battery** | Members' phones, and tags' coin cells before they die. | Tags: Premium |
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Fdriving_report.yaml) | **Driving alerts and trip summary** | Speeding, and a summary at the end of each trip (optionally only trips with incidents). | Premium |
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Fforgot_tag.yaml) | **You left without your keys** | You left home and your keys (wallet, backpack) did not. | Premium |
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Ftag_left_home.yaml) | **A tag left home without its owner** | The car keys left home while their owner is still there. | Premium |
+| [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frey9230%2Fplumio-homeassistant%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fplumio%2Ftag_reminder.yaml) | **Don't forget it** | At 7:30 on school days, if the backpack is still home (or still in the bedroom), say it on the phones and out loud. | Premium |
+
+Notifications go to any notify action you name (`notify.mobile_app_pixel_8`, or a group such as `notify.family` to reach everyone). SOS and crash alerts are sent as critical notifications, which ring even on silent.
+
 ### Actions
 
 | Action | What it does |

@@ -1,0 +1,60 @@
+blueprint:
+  name: "Plumio: a tag left home without its owner"
+  description: >
+    A tag (the car keys, a bike, a bag) leaves home while its owner is still at
+    home: someone else took it. Only phones of your own Nest report your tags, so
+    it was one of the family, but you probably want to know who has it.
+    Needs Plumio Premium (tags).
+  domain: automation
+  source_url: https://github.com/rey9230/plumio-homeassistant/blob/main/blueprints/automation/plumio/tag_left_home.yaml
+  author: Plumio
+  homeassistant:
+    min_version: "2024.10.0"
+  input:
+    tag:
+      name: Tag
+      selector:
+        entity:
+          filter:
+            - integration: plumio
+              domain: device_tracker
+    owner:
+      name: Owner
+      selector:
+        entity:
+          filter:
+            - integration: plumio
+              domain: device_tracker
+    notify_service:
+      name: Notification action
+      description: Usually the owner's phone, e.g. `notify.mobile_app_pixel_8`.
+      selector:
+        text:
+    extra_actions:
+      name: Extra actions
+      default: []
+      selector:
+        action:
+
+mode: single
+
+triggers:
+  - trigger: state
+    entity_id: !input tag
+    from: home
+
+variables:
+  owner: !input owner
+  notify_service: !input notify_service
+  tag_name: "{{ device_attr(device_id(trigger.entity_id), 'name') }}"
+
+conditions:
+  - condition: template
+    value_template: "{{ is_state(owner, 'home') }}"
+
+actions:
+  - action: "{{ notify_service | trim }}"
+    data:
+      title: Plumio
+      message: "{{ tag_name }} just left home, and you are still there."
+  - sequence: !input extra_actions
