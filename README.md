@@ -64,6 +64,21 @@ entity: device_tracker.camila
 
 Nothing to install: the card comes with the integration.
 
+### Tags by room card
+
+Every tag of the Nest at a glance, room by room: *Kitchen: Keys · Bedroom: Ana's
+backpack · At home, room unknown: Wallet · Away: Bike, 3 hours ago*. A low coin cell
+gets a warning icon. Tap a tag for its details.
+
+```yaml
+type: custom:plumio-tags-card
+title: Where are my things?   # optional
+show_away: true               # optional
+```
+
+Also in the card picker (*Plumio — Tags by room*). Needs Premium (tags), and the rooms
+need the setup above; without it tags are grouped as at home / away.
+
 ### Free and Premium
 
 On a free Nest, Home Assistant knows **who is home**, **which place each person is in**, **arrivals and departures**, **battery** and **SOS** — all live. That is enough for "lights on when the first person arrives".

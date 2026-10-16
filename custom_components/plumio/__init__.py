@@ -17,8 +17,9 @@ from .coordinator import PlumioConfigEntry, PlumioCoordinator
 from .rooms import TagRooms
 from .services import async_setup_services
 
-# Where the dashboard card is served from.
-CARD_URL = "/plumio_static/plumio-route-card.js"
+# The dashboard cards, served from here and loaded in every dashboard.
+CARDS = ("plumio-route-card.js", "plumio-tags-card.js")
+STATIC_URL = "/plumio_static"
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
@@ -31,7 +32,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 
 async def _async_register_card(hass: HomeAssistant) -> None:
-    """Serve the day-route card and load it in every dashboard, with nothing to install.
+    """Serve the cards and load them in every dashboard, with nothing to install.
 
     The version in the address makes browsers fetch the new file after an update
     instead of keeping the old one for a day.
@@ -39,15 +40,17 @@ async def _async_register_card(hass: HomeAssistant) -> None:
     if hass.http is None:
         return
     integration = await async_get_integration(hass, DOMAIN)
+    frontend = Path(__file__).parent / "frontend"
     await hass.http.async_register_static_paths(
-        [StaticPathConfig(CARD_URL, str(Path(__file__).parent / "frontend" / "plumio-route-card.js"), False)]
+        [StaticPathConfig(f"{STATIC_URL}/{card}", str(frontend / card), False) for card in CARDS]
     )
     # No dashboards to load it into (a Home Assistant running without its frontend).
     if "frontend" not in hass.config.components:
         return
     from homeassistant.components.frontend import add_extra_js_url  # noqa: PLC0415
 
-    add_extra_js_url(hass, f"{CARD_URL}?v={integration.version}")
+    for card in CARDS:
+        add_extra_js_url(hass, f"{STATIC_URL}/{card}?v={integration.version}")
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: PlumioConfigEntry) -> bool:

@@ -359,6 +359,31 @@ async def test_the_route_card_file_is_a_real_script() -> None:
         assert f"  {lang} {{" in source, lang
 
 
+async def test_the_tags_card_file_is_a_real_script() -> None:
+    from pathlib import Path
+
+    source = (Path(__file__).parent.parent / "custom_components" / "plumio" / "frontend" / "plumio-tags-card.js").read_text(
+        encoding="utf-8"
+    )
+    assert 'customElements.define("plumio-tags-card"' in source
+    # It finds tags by what the integration calls their entities: renaming a key breaks the card.
+    for key in ("tag_location", "tag_room", "tag_battery", "tag_last_seen"):
+        assert f"{key}:" in source, key
+    for lang in ("en:", "es:", "de:", "fr:", "it:", "pt:", '"zh-Hant":'):
+        assert f"  {lang} {{" in source, lang
+
+
+async def test_both_cards_are_served(hass: HomeAssistant) -> None:
+    from homeassistant.setup import async_setup_component
+
+    assert await async_setup_component(hass, "http", {})
+    assert await async_setup_component(hass, DOMAIN, {})
+    await hass.async_block_till_done()
+    routes = {r.resource.canonical for r in hass.http.app.router.routes() if r.resource is not None}
+    assert "/plumio_static/plumio-route-card.js" in routes
+    assert "/plumio_static/plumio-tags-card.js" in routes
+
+
 # ---------- lifecycle ----------
 
 
