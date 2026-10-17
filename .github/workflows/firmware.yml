@@ -1,7 +1,7 @@
 name: Firmware
 
 # Builds the Plumio Hogar ESP32 firmware and publishes it to the website
-# (rey9230/plumio-landing, public/hogar/firmware), where www.useplumio.com/hogar
+# (rey9230/plumio-landing, public/hogar/firmware), where www.useplumio.com/room-sensors
 # installs it from the browser. Needs the secret LANDING_TOKEN: a fine-grained
 # token with "Contents: read and write" on rey9230/plumio-landing.
 

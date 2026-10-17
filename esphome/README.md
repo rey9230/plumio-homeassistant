@@ -25,7 +25,7 @@ it are placed in the nearest room that has one.
 **From the browser (easiest).** Open the installer, plug the ESP32 into your computer and
 press *Install*. It flashes the firmware and asks for your Wi-Fi.
 
-→ <https://www.useplumio.com/hogar>
+→ <https://www.useplumio.com/room-sensors>
 
 (Chrome or Edge on a computer. [`.github/workflows/firmware.yml`](../.github/workflows/firmware.yml)
 compiles the firmware and publishes it to the website; until it has run, the page says
