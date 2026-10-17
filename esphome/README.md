@@ -25,10 +25,11 @@ it are placed in the nearest room that has one.
 **From the browser (easiest).** Open the installer, plug the ESP32 into your computer and
 press *Install*. It flashes the firmware and asks for your Wi-Fi.
 
-→ <https://rey9230.github.io/plumio-homeassistant/>
+→ <https://www.useplumio.com/hogar>
 
-(Chrome or Edge on a computer. The page is built and published by
-[`.github/workflows/firmware.yml`](../.github/workflows/firmware.yml).)
+(Chrome or Edge on a computer. [`.github/workflows/firmware.yml`](../.github/workflows/firmware.yml)
+compiles the firmware and publishes it to the website; until it has run, the page says
+"Coming soon".)
 
 **From the ESPHome dashboard.** Add a new device with one of these files, or adopt the
 board after a browser install:

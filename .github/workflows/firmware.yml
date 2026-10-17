@@ -1,7 +1,9 @@
 name: Firmware
 
-# Builds the Plumio Hogar ESP32 firmware and publishes the browser installer
-# (esphome/install) with it to GitHub Pages.
+# Builds the Plumio Hogar ESP32 firmware and publishes it to the website
+# (rey9230/plumio-landing, public/hogar/firmware), where www.useplumio.com/hogar
+# installs it from the browser. Needs the secret LANDING_TOKEN: a fine-grained
+# token with "Contents: read and write" on rey9230/plumio-landing.
 
 on:
   push:
@@ -60,26 +62,40 @@ jobs:
           name: firmware-${{ strategy.job-index }}
           path: out/
 
-  pages:
+  publish:
     if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - name: The website token is set
+        env:
+          TOKEN: ${{ secrets.LANDING_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::Missing secret LANDING_TOKEN (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
       - uses: actions/download-artifact@v4
         with:
           pattern: firmware-*
           merge-multiple: true
-          path: site
-      - run: cp esphome/install/index.html site/
-      - uses: actions/upload-pages-artifact@v3
+          path: firmware
+      - uses: actions/checkout@v4
         with:
-          path: site
-      - id: deploy
-        uses: actions/deploy-pages@v4
+          repository: rey9230/plumio-landing
+          token: ${{ secrets.LANDING_TOKEN }}
+          path: landing
+      - name: Commit the firmware to the website
+        working-directory: landing
+        run: |
+          mkdir -p public/hogar/firmware
+          cp ../firmware/* public/hogar/firmware/
+          git add public/hogar/firmware
+          if git diff --cached --quiet; then
+            echo "Firmware unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "firmware: Plumio Hogar (plumio-homeassistant ${GITHUB_SHA::7})"
+          git push
