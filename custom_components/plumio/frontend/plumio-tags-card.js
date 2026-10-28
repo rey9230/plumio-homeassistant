@@ -121,6 +121,7 @@ const ICONS = {
   luggage: "mdi:bag-suitcase",
   pet: "mdi:paw",
   bike: "mdi:bike",
+  car: "mdi:car",
   other: "mdi:tag",
 };
 
