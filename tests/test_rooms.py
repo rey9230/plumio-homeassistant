@@ -124,28 +124,33 @@ async def test_bermuda_appears_after_the_tag(
     assert hass.states.get("sensor.llaves_room").state == "Garaje"
 
 
-async def test_tags_are_added_to_bermuda_once(
+async def test_bermuda_is_left_alone_unless_asked(
+    hass: HomeAssistant, client_with_keys: AsyncMock, entry: MockConfigEntry
+) -> None:
+    """Bermuda's config entry is not Plumio's: by default it is never written to."""
+    bermuda = MockConfigEntry(domain="bermuda", options={"configured_devices": ["AA:BB:CC:DD:EE:FF"]})
+    bermuda.add_to_hass(hass)
+    await _setup(hass, entry)
+    assert bermuda.options == {"configured_devices": ["AA:BB:CC:DD:EE:FF"]}
+
+    await entry.runtime_data.async_refresh()
+    await _flush(hass)
+    assert bermuda.options == {"configured_devices": ["AA:BB:CC:DD:EE:FF"]}
+
+
+async def test_tags_are_added_to_bermuda_once_when_turned_on(
     hass: HomeAssistant, entry: MockConfigEntry, client_with_keys: AsyncMock
 ) -> None:
     bermuda = MockConfigEntry(domain="bermuda", options={"configured_devices": ["AA:BB:CC:DD:EE:FF"]})
     bermuda.add_to_hass(hass)
+    entry.add_to_hass(hass)
+    hass.config_entries.async_update_entry(entry, options={CONF_BERMUDA_AUTO_ADD: True})
     await _setup(hass, entry)
     assert bermuda.options["configured_devices"] == ["AA:BB:CC:DD:EE:FF", BEACON.upper()]
 
     await entry.runtime_data.async_refresh()
     await _flush(hass)
     assert bermuda.options["configured_devices"] == ["AA:BB:CC:DD:EE:FF", BEACON.upper()]
-
-
-async def test_adding_to_bermuda_can_be_switched_off(
-    hass: HomeAssistant, client_with_keys: AsyncMock, entry: MockConfigEntry
-) -> None:
-    bermuda = MockConfigEntry(domain="bermuda", options={"configured_devices": []})
-    bermuda.add_to_hass(hass)
-    entry.add_to_hass(hass)
-    hass.config_entries.async_update_entry(entry, options={CONF_BERMUDA_AUTO_ADD: False})
-    await _setup(hass, entry)
-    assert bermuda.options["configured_devices"] == []
 
 
 async def test_a_chosen_sensor_wins_over_bermuda(

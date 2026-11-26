@@ -50,8 +50,10 @@ from a phone and pick the network.
 1. **Settings → Devices & services**: the board shows up as discovered. Add it.
 2. Open the new device and **assign it to its area** (Kitchen, Bedroom…). The area name is
    the room name everyone will see.
-3. Install **Bermuda** from HACS and add it. The Plumio integration adds your tags to
-   Bermuda's list on its own (Plumio → Configure, if you'd rather not).
+3. Install **Bermuda** from HACS and add it, then pick your Plumio tags in **Bermuda →
+   Configure → Select devices** (see the main [README](../README.md#which-room-each-tag-is-in)).
+   Or turn on *Add my tags to Bermuda automatically* in **Plumio → Configure** and Plumio
+   adds them for you.
 4. A few minutes later each tag's **Room** sensor says where it is, and so does the
    Plumio app.
 

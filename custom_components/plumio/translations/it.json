@@ -33,7 +33,7 @@
         },
         "data_description": {
           "max_gps_accuracy": "0 accetta tutto.",
-          "bermuda_auto_add": "Con proxy Bluetooth e l'integrazione Bermuda, ogni tag sa in quale stanza si trova. Questo aggiunge i tag del Nido all'elenco dei dispositivi seguiti da Bermuda; non rimuove mai nulla."
+          "bermuda_auto_add": "Con proxy Bluetooth e l'integrazione Bermuda, ogni tag sa in quale stanza si trova. Disattivato di serie: se lo attivi, Plumio modifica le impostazioni di Bermuda per aggiungere i tag del Nido al suo elenco di dispositivi seguiti (non rimuove mai nulla). Disattivato, aggiungili tu in Bermuda → Configura."
         }
       },
       "rooms": {

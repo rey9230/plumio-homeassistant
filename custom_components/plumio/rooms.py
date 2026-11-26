@@ -142,11 +142,12 @@ class TagRooms:
 
     @callback
     def _add_to_bermuda(self, beacons: list[str]) -> None:
-        """Ask Bermuda to track the Nest's tags, so their rooms appear with nothing to set up.
+        """Ask Bermuda to track the Nest's tags, so their rooms appear with nothing more to set up.
 
-        Only ever adds, and each beacon once per start: if someone takes a tag out of
-        Bermuda's list on purpose, it stays out until the next restart, and the option
-        switches this off for good.
+        Runs only when the user turned the option on: it changes Bermuda's own config
+        entry. Only ever adds, and each beacon once per start: if someone takes a tag out
+        of Bermuda's list on purpose, it stays out until the next restart, and turning the
+        option off stops it for good.
         """
         new = [b.upper() for b in beacons if b.upper() not in self._offered_to_bermuda]
         if not new:

@@ -21,10 +21,11 @@ CONF_HOME_FROM_PLACES = "home_from_places"
 DEFAULT_MAX_GPS_ACCURACY = 200
 DEFAULT_HOME_FROM_PLACES = True
 # Rooms: which sensor says where each tag is (tag id -> entity id), and whether to
-# ask Bermuda to track the Nest's tags.
+# ask Bermuda to track the Nest's tags. Off unless the user turns it on: it writes to
+# Bermuda's own config entry, which is not Plumio's to change on its own.
 CONF_ROOM_SOURCES = "room_sources"
 CONF_BERMUDA_AUTO_ADD = "bermuda_auto_add"
-DEFAULT_BERMUDA_AUTO_ADD = True
+DEFAULT_BERMUDA_AUTO_ADD = False
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,

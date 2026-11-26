@@ -33,7 +33,7 @@
         },
         "data_description": {
           "max_gps_accuracy": "0 表示全部接受。",
-          "bermuda_auto_add": "透過藍牙代理與 Bermuda 整合，每個追蹤器都能知道自己在哪個房間。這會把巢的追蹤器加入 Bermuda 的追蹤清單；不會移除任何東西。"
+          "bermuda_auto_add": "透過藍牙代理與 Bermuda 整合，每個追蹤器都能知道自己在哪個房間。預設為關閉：開啟後，Plumio 會修改 Bermuda 的設定，把巢的追蹤器加入它的追蹤清單（不會移除任何東西）。關閉時，請自行到 Bermuda → 設定 中加入。"
         }
       },
       "rooms": {

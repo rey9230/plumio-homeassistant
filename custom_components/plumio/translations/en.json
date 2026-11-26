@@ -33,7 +33,7 @@
         },
         "data_description": {
           "max_gps_accuracy": "0 accepts everything.",
-          "bermuda_auto_add": "With Bluetooth proxies and the Bermuda integration, each tag gets the room it is in. This adds the Nest's tags to Bermuda's list of devices to track; it never removes anything."
+          "bermuda_auto_add": "With Bluetooth proxies and the Bermuda integration, each tag gets the room it is in. Off by default: turned on, Plumio changes Bermuda's settings to add the Nest's tags to its list of devices to track (it never removes anything). Off, add them yourself in Bermuda → Configure."
         }
       },
       "rooms": {

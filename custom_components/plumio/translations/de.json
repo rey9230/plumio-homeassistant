@@ -33,7 +33,7 @@
         },
         "data_description": {
           "max_gps_accuracy": "0 akzeptiert alles.",
-          "bermuda_auto_add": "Mit Bluetooth-Proxys und der Bermuda-Integration bekommt jeder Tag den Raum, in dem er liegt. Das fügt die Tags des Nests zu Bermudas Geräteliste hinzu; entfernt wird nie etwas."
+          "bermuda_auto_add": "Mit Bluetooth-Proxys und der Bermuda-Integration bekommt jeder Tag den Raum, in dem er liegt. Standardmäßig aus: eingeschaltet ändert Plumio die Einstellungen von Bermuda und fügt die Tags des Nests zu dessen Geräteliste hinzu (entfernt wird nie etwas). Ausgeschaltet fügst du sie selbst unter Bermuda → Konfigurieren hinzu."
         }
       },
       "rooms": {

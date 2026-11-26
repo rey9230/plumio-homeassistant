@@ -38,9 +38,16 @@ out which one hears the tag best.
    [`esphome/`](esphome/README.md) for a ready-made firmware you install from the browser).
    Assign each proxy to its area in Home Assistant.
 2. **Install Bermuda** from HACS.
-3. That's it. Plumio adds your tags to Bermuda's list of devices to track (switch it
-   off in the options if you'd rather do it yourself), finds the Area sensor Bermuda
-   creates for each one, and fills the tag's **Room** sensor.
+3. **Tell Bermuda to track your tags.** In **Settings → Devices & services → Bermuda →
+   Configure → Select devices**, pick each Plumio tag. They are iBeacons whose id starts
+   with `a923b4a3931044499732a63c687d4576` and ends in the tag's model and unit number
+   (`…_<model>_<number>`).
+
+   Or let Plumio do it: turn on *Add my tags to Bermuda automatically* in **Plumio →
+   Configure**. It is off by default because it changes Bermuda's settings; it only ever
+   adds tags, never removes anything.
+4. That's it. Plumio finds the Area sensor Bermuda creates for each tag and fills the
+   tag's **Room** sensor.
 
 The room also reaches the Plumio app, so the family sees *Keys · Kitchen, 2 min ago*
 on their phones. Home Assistant repeats it every 5 minutes while the tag is still
