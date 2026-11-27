@@ -8,7 +8,7 @@ Your family's location in Home Assistant, pushed live from your [Plumio](https:/
 
 ## Install
 
-1. In HACS, add this repository as a custom repository (category *Integration*) and install **Plumio**.
+1. In HACS, search for **Plumio** and download it.
 2. Restart Home Assistant.
 3. Go to **Settings → Devices & services → Add integration → Plumio**.
 4. On the phone of the Nest's admin, scan the code shown (or open Plumio → Nest → Integrations and type it), and approve.
